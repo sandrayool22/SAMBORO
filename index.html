@@ -21,21 +21,17 @@ href="https://cdn.jsdelivr.net/npm/bulma@1.0.4/css/bulma.min.css">
 
 
 
-<section class="hero is-fullheight">
-
-
-<div class="hero-body" style="padding:0;">
-
+<section class="hero">
 
 
 <div class="columns is-gapless is-vcentered"
-style="width:100%; min-height:100vh;">
+style="min-height:100vh;">
 
 
 
 
 
-<!-- PARTE IZQUIERDA -->
+<!-- IZQUIERDA -->
 
 
 <div class="column is-6"
@@ -54,9 +50,10 @@ align-items:center;
 
 
 
-
-
-<div style="width:100%; max-width:520px;">
+<div style="
+width:100%;
+max-width:520px;
+">
 
 
 
@@ -68,6 +65,7 @@ style="color:#b51d2a; letter-spacing:3px;">
 SAMBORO
 
 </p>
+
 
 
 
@@ -107,19 +105,14 @@ dentro de Samboro.
 
 
 
+
 <br>
 
 
 
 
 
-
-<!-- FORMULARIO -->
-
-
-
 <div class="box"
-
 
 style="
 
@@ -127,7 +120,7 @@ border-radius:15px;
 
 box-shadow:0 15px 40px rgba(0,0,0,.18);
 
-background:rgba(74,74,74,0.90);
+background:rgba(74,74,74,.90);
 
 padding:30px;
 
@@ -140,9 +133,7 @@ padding:30px;
 <h2 class="title is-4"
 style="color:white;">
 
-
 Registro de no compra
-
 
 </h2>
 
@@ -169,9 +160,6 @@ Usuario
 
 
 
-<div class="control">
-
-
 <input 
 
 class="input is-medium"
@@ -181,7 +169,6 @@ type="text"
 id="usuario"
 
 placeholder="Ingrese usuario"
-
 
 required
 
@@ -200,10 +187,6 @@ border:none;
 </div>
 
 
-</div>
-
-
-
 
 
 
@@ -213,25 +196,18 @@ border:none;
 
 
 <label class="label"
-
 style="color:white;">
 
-
 Motivo de no compra
-
 
 </label>
 
 
 
-
-<div class="control">
-
-
-<div class="select is-medium is-fullwidth">
+<div class="select is-fullwidth is-medium">
 
 
-<select 
+<select
 
 id="motivo"
 
@@ -246,53 +222,38 @@ border:none;
 ">
 
 
-
 <option>
-
 Seleccione una opción
-
 </option>
 
 
 <option>
-
 Precio alto
-
 </option>
 
 
 <option>
-
 Cliente compara opciones
-
 </option>
 
 
 <option>
-
 No encontró producto
-
 </option>
 
 
 <option>
-
 Lo va a pensar
-
 </option>
 
 
 <option>
-
 Falta de presupuesto
-
 </option>
 
 
 <option>
-
 Otro
-
 </option>
 
 
@@ -300,17 +261,10 @@ Otro
 </select>
 
 
-
 </div>
 
 
-
 </div>
-
-
-
-</div>
-
 
 
 
@@ -323,29 +277,21 @@ Otro
 
 
 <label class="label"
-
 style="color:white;">
 
-
 Comentario adicional
-
 
 </label>
 
 
 
-
 <textarea
-
 
 class="textarea"
 
-
 id="comentario"
 
-
 placeholder="Detalle del cliente..."
-
 
 style="
 
@@ -358,9 +304,7 @@ border:none;
 ">
 
 
-
 </textarea>
-
 
 
 </div>
@@ -371,12 +315,9 @@ border:none;
 
 
 
-
 <button
 
-
 class="button is-medium is-fullwidth"
-
 
 style="
 
@@ -391,9 +332,7 @@ border:none;
 ">
 
 
-
 Guardar registro
-
 
 
 </button>
@@ -415,6 +354,8 @@ Guardar registro
 
 
 
+</div>
+
 
 </div>
 
@@ -422,25 +363,18 @@ Guardar registro
 
 
 
-</div>
 
 
 
 
-
-
-
-
-<!-- PARTE DERECHA IMAGEN -->
+<!-- IMAGEN -->
 
 
 <div class="column is-6"
 
 style="
 
-height:100vh;
-
-overflow:hidden;
+min-height:100vh;
 
 ">
 
@@ -449,7 +383,6 @@ overflow:hidden;
 
 
 <img
-
 
 src="https://www.samboro.com/wp-content/uploads/2025/12/342-GRIS-VT00015606-es-Okc92Xikw6RZmswN.jpg"
 
@@ -460,14 +393,14 @@ width:100%;
 
 height:100%;
 
+min-height:100vh;
+
 object-fit:cover;
 
 ">
 
 
 
-
-
 </div>
 
 
@@ -475,18 +408,8 @@ object-fit:cover;
 
 
 
-</div>
-
-
-
-
 
 </div>
-
-
-</section>
-
-
 
 
 
@@ -505,7 +428,7 @@ e.preventDefault();
 
 
 
-let datos = {
+let datos={
 
 
 usuario:
@@ -520,9 +443,7 @@ comentario:
 document.getElementById("comentario").value
 
 
-
 };
-
 
 
 
@@ -532,18 +453,13 @@ fetch(
 
 {
 
-
 method:"POST",
-
 
 mode:"no-cors",
 
-
 headers:{
 
-
 "Content-Type":"application/json"
-
 
 },
 
@@ -551,11 +467,8 @@ headers:{
 body:JSON.stringify(datos)
 
 
-}
+})
 
-
-
-)
 
 .then(()=>{
 
@@ -563,24 +476,9 @@ body:JSON.stringify(datos)
 alert("Registro guardado correctamente");
 
 
-
 document
 .getElementById("registroForm")
 .reset();
-
-
-
-})
-
-
-
-.catch(error=>{
-
-
-console.log(error);
-
-
-alert("Error al guardar el registro");
 
 
 });
@@ -594,10 +492,6 @@ alert("Error al guardar el registro");
 
 
 
-
-
-
 </body>
-
 
 </html>
