@@ -3,17 +3,18 @@
 
 <head>
 
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Samboro | Registro de seguimiento</title>
+<title>Samboro | Registro de seguimiento</title>
 
 
-    <link rel="stylesheet" 
-    href="https://cdn.jsdelivr.net/npm/bulma@1.0.4/css/bulma.min.css">
+<link rel="stylesheet" 
+href="https://cdn.jsdelivr.net/npm/bulma@1.0.4/css/bulma.min.css">
 
 
 </head>
+
 
 
 <body style="background:#eee8df;">
@@ -23,36 +24,52 @@
 <section class="hero is-fullheight">
 
 
-<div class="hero-body">
+<div class="hero-body" style="padding:0;">
 
 
-<div class="container">
+
+<div class="columns is-gapless is-vcentered"
+style="width:100%; height:100vh;">
 
 
-<div class="columns is-vcentered">
 
 
-<!-- LADO IZQUIERDO -->
 
-<div class="column is-6">
+<!-- PARTE IZQUIERDA -->
+
+
+<div class="column is-6"
+style="padding:60px;">
+
 
 
 <p class="title is-2" 
 style="color:#b51d2a; letter-spacing:3px;">
+
 SAMBORO
+
 </p>
+
+
 
 
 
 <h1 class="title is-1 has-text-weight-light"
 style="color:#2c2c2c;">
+
+
 Registro de 
+
 <span style="color:#b51d2a;">
+
 seguimiento
+
 </span>
 
 
 </h1>
+
+
 
 
 
@@ -69,30 +86,53 @@ dentro de Samboro.
 
 
 
+
+
+<br>
+
+
+
+
+
+
 <!-- FORMULARIO -->
+
 
 
 <div class="box"
 
+
 style="
-border-radius:10px;
-box-shadow:0 10px 30px rgba(0,0,0,.15);
-background:#4a4a4a;
+
+border-radius:15px;
+
+box-shadow:0 15px 40px rgba(0,0,0,.18);
+
+background:rgba(74,74,74,0.90);
+
 ">
+
+
 
 
 
 <h2 class="title is-4"
 style="color:white;">
 
+
 Registro de no compra
+
 
 </h2>
 
 
 
 
+
+
 <form id="registroForm">
+
+
 
 
 
@@ -112,6 +152,7 @@ Usuario
 
 
 <input 
+
 class="input is-medium"
 
 type="text"
@@ -120,12 +161,18 @@ id="usuario"
 
 placeholder="Ingrese usuario"
 
+
 required
 
+
 style="
-background:#5a5a5a;
+
+background:rgba(255,255,255,.12);
+
 color:white;
+
 border:none;
+
 ">
 
 
@@ -139,15 +186,21 @@ border:none;
 
 
 
+
+
 <div class="field">
 
 
 <label class="label"
+
 style="color:white;">
+
 
 Motivo de no compra
 
+
 </label>
+
 
 
 
@@ -158,60 +211,86 @@ Motivo de no compra
 
 
 <select 
+
 id="motivo"
 
 style="
+
 background:#5a5a5a;
+
 color:white;
+
 border:none;
+
 ">
 
 
+
 <option>
+
 Seleccione una opción
+
 </option>
 
 
 <option>
+
 Precio alto
+
 </option>
 
 
 <option>
+
 Cliente compara opciones
+
 </option>
 
 
 <option>
+
 No encontró producto
+
 </option>
 
 
 <option>
+
 Lo va a pensar
+
 </option>
 
 
 <option>
+
 Falta de presupuesto
+
 </option>
 
 
 <option>
+
 Otro
+
 </option>
+
 
 
 </select>
 
 
-</div>
-
 
 </div>
 
 
+
 </div>
+
+
+
+</div>
+
+
 
 
 
@@ -223,9 +302,12 @@ Otro
 
 
 <label class="label"
+
 style="color:white;">
 
+
 Comentario adicional
+
 
 </label>
 
@@ -234,17 +316,26 @@ Comentario adicional
 
 <textarea
 
+
 class="textarea"
+
 
 id="comentario"
 
+
 placeholder="Detalle del cliente..."
 
+
 style="
-background:#5a5a5a;
+
+background:rgba(255,255,255,.12);
+
 color:white;
+
 border:none;
+
 ">
+
 
 
 </textarea>
@@ -262,20 +353,30 @@ border:none;
 
 <button
 
+
 class="button is-medium is-fullwidth"
 
+
 style="
+
 background:#b51d2a;
+
 color:white;
+
 border-radius:30px;
+
 border:none;
+
 ">
+
 
 
 Guardar registro
 
 
+
 </button>
+
 
 
 
@@ -284,10 +385,16 @@ Guardar registro
 
 
 
+
+
 </div>
 
 
 
+
+
+
+
 </div>
 
 
@@ -297,38 +404,40 @@ Guardar registro
 
 
 
-<!-- LADO DERECHO -->
+<!-- PARTE DERECHA IMAGEN -->
 
 
-<div class="column is-6">
-
-
-
-<div class="box"
+<div class="column is-6"
 
 style="
-height:520px;
-padding:0;
+
+height:100vh;
+
 overflow:hidden;
-border-radius:0;
-background:#222;
+
 ">
+
+
 
 
 
 <img
 
+
 src="https://www.samboro.com/wp-content/uploads/2025/12/342-GRIS-VT00015606-es-Okc92Xikw6RZmswN.jpg"
 
+
 style="
+
 width:100%;
+
 height:100%;
+
 object-fit:cover;
-opacity:.85;
+
 ">
 
 
-</div>
 
 
 
@@ -339,11 +448,10 @@ opacity:.85;
 
 
 
-
 </div>
 
 
-</div>
+
 
 
 </div>
@@ -369,9 +477,7 @@ document
 e.preventDefault();
 
 
-
 alert("Registro guardado correctamente");
-
 
 
 this.reset();
@@ -381,8 +487,8 @@ this.reset();
 });
 
 
-
 </script>
+
 
 
 
