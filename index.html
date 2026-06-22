@@ -496,6 +496,9 @@ object-fit:cover;
 <script>
 
 
+<script>
+
+
 document
 .getElementById("registroForm")
 .addEventListener("submit", function(e){
@@ -508,13 +511,17 @@ e.preventDefault();
 let datos = {
 
 
-usuario: document.getElementById("usuario").value,
+usuario:
+document.getElementById("usuario").value,
 
 
-motivo: document.getElementById("motivo").value,
+motivo:
+document.getElementById("motivo").value,
 
 
-comentario: document.getElementById("comentario").value
+comentario:
+document.getElementById("comentario").value
+
 
 
 };
@@ -522,26 +529,38 @@ comentario: document.getElementById("comentario").value
 
 
 
-fetch("https://script.google.com/macros/s/AKfycbwJGF6YvAQi_YrNS90aJyH7QTCfkqJcrtjMpzrXqLGqM6_0HPdGI-pCeSs65zuEmD6Aug/exec",
+fetch(
+
+"https://script.google.com/macros/s/AKfycbwJGF6YvAQi_YrNS90aJyH7QTCfkqJcrtjMpzrXqLGqM6_0HPdGI-pCeSs65zuEmD6Aug/exec",
+
 {
 
 
 method:"POST",
 
 
-body: JSON.stringify(datos)
+mode:"no-cors",
 
 
-})
+headers:{
+
+
+"Content-Type":"application/json"
+
+
+},
+
+
+body:JSON.stringify(datos)
+
+
+}
 
 
 
-.then(response => response.json())
+)
 
-
-
-.then(resultado => {
-
+.then(()=>{
 
 
 alert("Registro guardado correctamente");
@@ -558,8 +577,7 @@ document
 
 
 
-.catch(error => {
-
+.catch(error=>{
 
 
 console.log(error);
@@ -573,6 +591,9 @@ alert("Error al guardar el registro");
 
 
 });
+
+
+</script>
 
 
 </script>
