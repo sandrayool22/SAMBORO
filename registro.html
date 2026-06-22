@@ -13,7 +13,6 @@
 href="https://cdn.jsdelivr.net/npm/bulma@1.0.4/css/bulma.min.css">
 
 
-
 <style>
 
 
@@ -54,7 +53,6 @@ min-height:300px !important;
 }
 
 
-
 </style>
 
 
@@ -72,7 +70,6 @@ min-height:300px !important;
 <section>
 
 
-
 <div class="columns is-gapless">
 
 
@@ -80,12 +77,10 @@ min-height:300px !important;
 
 
 
-<!-- IZQUIERDA -->
-
+<!-- PARTE IZQUIERDA -->
 
 
 <div class="column is-6 contenido"
-
 
 style="
 
@@ -113,7 +108,6 @@ padding:60px;
 
 
 
-
 <p class="title logo"
 
 style="
@@ -124,9 +118,7 @@ letter-spacing:3px;
 
 ">
 
-
 SAMBORO
-
 
 </p>
 
@@ -165,8 +157,9 @@ cliente
 
 
 
-<p class="subtitle is-5"
 
+
+<p class="subtitle is-5"
 
 style="
 
@@ -178,11 +171,12 @@ line-height:1.6;
 
 
 Registra la información del cliente
-para conocer sus necesidades y mejorar
-la experiencia comercial.
+para conocer sus necesidades
+y mejorar la experiencia comercial.
 
 
 </p>
+
 
 
 
@@ -198,9 +192,7 @@ la experiencia comercial.
 
 
 
-
-<!-- DATOS DEL VENDEDOR -->
-
+<!-- INFORMACION VENDEDOR -->
 
 
 <div class="box"
@@ -214,35 +206,33 @@ background:#b51d2a;
 
 color:white;
 
-padding:18px;
-
 box-shadow:0 10px 25px rgba(0,0,0,.15);
 
 ">
 
 
 
-<p style="font-size:15px;">
 
+
+<p>
 
 Vendedor activo:
 
 <b id="mostrarVendedor"></b>
 
-
 </p>
 
 
 
-<p style="font-size:15px;">
 
+<p>
 
 Sucursal:
 
 <b id="mostrarSucursal"></b>
 
-
 </p>
+
 
 
 
@@ -256,9 +246,7 @@ Sucursal:
 
 
 
-
 <!-- FORMULARIO -->
-
 
 
 <div class="box"
@@ -280,15 +268,18 @@ padding:30px;
 
 
 
-
 <h2 class="title is-4"
 
-style="color:white;text-align:center;">
+style="
+
+color:white;
+
+text-align:center;
+
+">
 
 
-
-¿Qué lo trae por aquí hoy?
-
+¿Qué fue lo que lo trajo por aquí hoy?
 
 
 </h2>
@@ -298,8 +289,9 @@ style="color:white;text-align:center;">
 
 
 
-<form id="registroForm">
 
+
+<form id="registroForm">
 
 
 
@@ -324,7 +316,6 @@ Respuesta del cliente
 
 
 
-
 <textarea
 
 
@@ -333,8 +324,7 @@ class="textarea"
 id="respuesta"
 
 
-placeholder="Ejemplo: Busco una cocina para mi casa..."
-
+placeholder="Ejemplo: Estoy buscando cambiar el piso de mi casa..."
 
 required
 
@@ -350,9 +340,8 @@ border:none;
 ">
 
 
+
 </textarea>
-
-
 
 
 
@@ -365,9 +354,7 @@ border:none;
 
 
 
-
 <button
-
 
 class="button is-fullwidth is-medium"
 
@@ -397,6 +384,7 @@ Guardar registro
 
 
 
+
 </form>
 
 
@@ -405,14 +393,6 @@ Guardar registro
 
 
 
-</div>
-
-
-
-
-
-
-
 
 </div>
 
@@ -426,13 +406,17 @@ Guardar registro
 
 
 
+</div>
 
 
 
 
 
 
-<!-- IMAGEN -->
+
+
+
+<!-- IMAGEN DERECHA -->
 
 
 <div class="column is-6 imagen"
@@ -443,11 +427,11 @@ style="min-height:100vh;">
 
 
 
+
 <img
 
 
 src="https://www.samboro.com/wp-content/uploads/2025/12/342-GRIS-VT00015606-es-Okc92Xikw6RZmswN.jpg"
-
 
 
 style="
@@ -461,6 +445,8 @@ min-height:100vh;
 object-fit:cover;
 
 ">
+
+
 
 
 
@@ -485,7 +471,8 @@ object-fit:cover;
 
 
 
-// CARGAR PERFIL GUARDADO
+
+// VALIDAR PERFIL
 
 
 
@@ -509,12 +496,17 @@ window.location.href="perfil.html";
 
 
 
+
+
+// MOSTRAR DATOS
+
+
+
 document
 
 .getElementById("mostrarVendedor")
 
-.innerHTML=vendedor;
-
+.innerHTML = vendedor;
 
 
 
@@ -523,7 +515,7 @@ document
 
 .getElementById("mostrarSucursal")
 
-.innerHTML=sucursal;
+.innerHTML = sucursal;
 
 
 
@@ -533,9 +525,7 @@ document
 
 
 
-
-
-// GUARDAR REGISTRO
+// ENVIAR REGISTRO
 
 
 
@@ -554,8 +544,7 @@ e.preventDefault();
 
 
 
-let datos={
-
+let datos = {
 
 
 vendedor:vendedor,
@@ -566,7 +555,11 @@ sucursal:sucursal,
 
 respuesta:
 
-document.getElementById("respuesta").value
+document
+
+.getElementById("respuesta")
+
+.value
 
 
 
@@ -578,7 +571,9 @@ document.getElementById("respuesta").value
 
 
 
+
 fetch(
+
 
 "https://script.google.com/macros/s/AKfycbwJGF6YvAQi_YrNS90aJyH7QTCfkqJcrtjMpzrXqLGqM6_0HPdGI-pCeSs65zuEmD6Aug/exec",
 
@@ -595,10 +590,11 @@ mode:"no-cors",
 body:JSON.stringify(datos)
 
 
-
 }
 
+
 )
+
 
 
 
@@ -606,7 +602,9 @@ body:JSON.stringify(datos)
 .then(()=>{
 
 
+
 alert("Registro guardado correctamente");
+
 
 
 document
@@ -615,6 +613,21 @@ document
 
 .reset();
 
+
+
+})
+
+
+
+
+
+.catch(error=>{
+
+
+console.log(error);
+
+
+alert("Error al guardar registro");
 
 
 });
@@ -636,7 +649,7 @@ document
 
 
 
-</body>
 
+</body>
 
 </html>
