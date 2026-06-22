@@ -8,13 +8,16 @@
 
     <title>Samboro | Registro de seguimiento</title>
 
+
     <link rel="stylesheet" 
     href="https://cdn.jsdelivr.net/npm/bulma@1.0.4/css/bulma.min.css">
+
 
 </head>
 
 
 <body style="background:#eee8df;">
+
 
 
 <section class="hero is-fullheight">
@@ -42,15 +45,18 @@ SAMBORO
 </p>
 
 
+
 <h1 class="title is-1 has-text-weight-light"
 style="color:#2c2c2c;">
 
-Registro de
+
+Gestión inteligente
 <br>
 
 <span style="color:#b51d2a;">
-motivos de no compra
+de proyectos
 </span>
+
 
 </h1>
 
@@ -59,86 +65,147 @@ motivos de no compra
 <p class="subtitle is-5"
 style="color:#555; line-height:1.6;">
 
-Herramienta interna diseñada para registrar,
-analizar y mejorar la experiencia comercial
+
+Plataforma web diseñada para registrar,
+analizar y mejorar las oportunidades comerciales
 dentro de Samboro.
 
+
 </p>
+
 
 
 <br>
 
 
+
+<!-- FORMULARIO -->
+
+
 <div class="box"
+
 style="
 border-radius:18px;
-box-shadow:0 10px 30px rgba(0,0,0,.08);
-background:white;
+box-shadow:0 10px 30px rgba(0,0,0,.15);
+background:#4a4a4a;
 ">
 
 
-<h2 class="title is-4">
-Nuevo registro
+
+<h2 class="title is-4"
+style="color:white;">
+
+Registro de no compra
+
 </h2>
+
 
 
 
 <form id="registroForm">
 
 
+
 <div class="field">
 
-<label class="label">
-Usuario vendedor
+
+<label class="label"
+style="color:white;">
+
+Usuario
+
 </label>
+
+
 
 <div class="control">
 
-<input class="input is-medium"
+
+<input 
+class="input is-medium"
+
 type="text"
-placeholder="Nombre del vendedor"
+
 id="usuario"
-required>
+
+placeholder="Ingrese usuario"
+
+required
+
+style="
+background:#5a5a5a;
+color:white;
+border:none;
+">
+
 
 </div>
 
+
 </div>
+
+
+
 
 
 
 <div class="field">
 
-<label class="label">
+
+<label class="label"
+style="color:white;">
+
 Motivo de no compra
+
 </label>
 
 
+
 <div class="control">
+
 
 <div class="select is-medium is-fullwidth">
 
 
-<select id="motivo">
+<select 
+id="motivo"
+
+style="
+background:#5a5a5a;
+color:white;
+border:none;
+">
+
 
 <option>
 Seleccione una opción
 </option>
 
+
 <option>
 Precio alto
 </option>
+
 
 <option>
 Cliente compara opciones
 </option>
 
+
 <option>
 No encontró producto
 </option>
 
+
 <option>
 Lo va a pensar
 </option>
+
+
+<option>
+Falta de presupuesto
+</option>
+
 
 <option>
 Otro
@@ -150,79 +217,119 @@ Otro
 
 </div>
 
-</div>
 
 </div>
+
+
+</div>
+
+
+
+
 
 
 
 <div class="field">
 
 
-<label class="label">
+<label class="label"
+style="color:white;">
+
 Comentario adicional
+
 </label>
 
 
-<textarea 
+
+
+<textarea
+
 class="textarea"
+
+id="comentario"
+
 placeholder="Detalle del cliente..."
-id="comentario">
+
+style="
+background:#5a5a5a;
+color:white;
+border:none;
+">
+
+
 </textarea>
+
 
 
 </div>
 
 
 
-<button 
+
+
+
+
+
+<button
+
 class="button is-medium is-fullwidth"
+
 style="
 background:#b51d2a;
 color:white;
 border-radius:30px;
+border:none;
 ">
+
 
 Guardar registro
 
+
 </button>
+
 
 
 
 </form>
 
 
+
+</div>
+
+
+
 </div>
 
 
 
-</div>
+
 
 
 
 
 <!-- LADO DERECHO -->
 
+
 <div class="column is-6">
 
 
-<div class="has-text-centered">
-
 
 <div class="box"
+
 style="
 height:520px;
-display:flex;
-align-items:center;
-justify-content:center;
-background:#1e1e1e;
-border-radius:0;
+padding:0;
 overflow:hidden;
+border-radius:0;
+background:#222;
 ">
 
 
-<img 
+
+<img
+
 src="https://images.unsplash.com/photo-1600607687939-ce8a6c25118c"
+
 style="
 width:100%;
 height:100%;
@@ -234,14 +341,16 @@ opacity:.85;
 </div>
 
 
-</div>
-
 
 </div>
 
 
-</div>
 
+
+
+
+
+</div>
 
 
 </div>
@@ -254,23 +363,33 @@ opacity:.85;
 
 
 
+
+
+
+
+
 <script>
 
 
-document.getElementById("registroForm")
-.addEventListener("submit",function(e){
+document
+.getElementById("registroForm")
+.addEventListener("submit", function(e){
 
 
 e.preventDefault();
 
 
+
 alert("Registro guardado correctamente");
+
 
 
 this.reset();
 
 
+
 });
+
 
 
 </script>
@@ -278,5 +397,6 @@ this.reset();
 
 
 </body>
+
 
 </html>
