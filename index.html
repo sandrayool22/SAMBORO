@@ -1,1 +1,130 @@
-<h>HOLA BUEN DIA</h>
+<!-- Registro de motivos de no compra -->
+<section class="section">
+    <div class="container">
+
+        <div class="box">
+
+            <h1 class="title has-text-centered">
+                Registro de motivos de no compra
+            </h1>
+
+            <p class="subtitle has-text-centered">
+                Ingresa la información del cliente para conocer las razones por las que no se concretó la venta.
+            </p>
+
+
+            <form id="registroForm">
+
+                <div class="field">
+                    <label class="label">Usuario vendedor</label>
+                    <div class="control">
+                        <input 
+                            class="input" 
+                            type="text" 
+                            id="usuario"
+                            placeholder="Ejemplo: Juan Pérez"
+                            required>
+                    </div>
+                </div>
+
+
+                <div class="field">
+                    <label class="label">Motivo de no compra</label>
+
+                    <div class="control">
+                        <div class="select is-fullwidth">
+
+                            <select id="motivo" required>
+                                <option value="">
+                                    Seleccione un motivo
+                                </option>
+
+                                <option>
+                                    Precio alto
+                                </option>
+
+                                <option>
+                                    Lo va a pensar
+                                </option>
+
+                                <option>
+                                    Compró con competencia
+                                </option>
+
+                                <option>
+                                    No encontró producto
+                                </option>
+
+                                <option>
+                                    Falta de presupuesto
+                                </option>
+
+                                <option>
+                                    Otro
+                                </option>
+
+                            </select>
+
+                        </div>
+                    </div>
+
+                </div>
+
+
+                <div class="field">
+
+                    <label class="label">
+                        Observación
+                    </label>
+
+                    <div class="control">
+
+                        <textarea 
+                            class="textarea"
+                            id="observacion"
+                            placeholder="Escriba algún detalle adicional">
+                        </textarea>
+
+                    </div>
+
+                </div>
+
+
+                <div class="field has-text-centered">
+
+                    <div class="control">
+
+                        <button 
+                            class="button is-primary"
+                            type="submit">
+
+                            Guardar registro
+
+                        </button>
+
+                    </div>
+
+                </div>
+
+
+            </form>
+
+        </div>
+
+    </div>
+</section>
+
+
+<script>
+
+document.getElementById("registroForm").addEventListener("submit", function(e){
+
+    e.preventDefault();
+
+    alert("Registro guardado correctamente");
+
+    document.getElementById("registroForm").reset();
+
+});
+
+</script>
