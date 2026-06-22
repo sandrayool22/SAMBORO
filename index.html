@@ -13,6 +13,55 @@
 href="https://cdn.jsdelivr.net/npm/bulma@1.0.4/css/bulma.min.css">
 
 
+<style>
+
+@media(max-width:768px){
+
+
+.hero-text{
+padding:25px !important;
+}
+
+
+.logo{
+font-size:2rem !important;
+}
+
+
+.main-title{
+font-size:2.7rem !important;
+line-height:1.1;
+}
+
+
+.subtitle-mobile{
+font-size:1rem !important;
+}
+
+
+.form-box{
+
+padding:20px !important;
+
+}
+
+
+
+.image-mobile{
+
+min-height:300px !important;
+
+}
+
+
+
+}
+
+
+
+</style>
+
+
 </head>
 
 
@@ -21,11 +70,11 @@ href="https://cdn.jsdelivr.net/npm/bulma@1.0.4/css/bulma.min.css">
 
 
 
-<section class="hero">
+<section>
 
 
-<div class="columns is-gapless is-vcentered"
-style="min-height:100vh;">
+
+<div class="columns is-gapless">
 
 
 
@@ -34,35 +83,40 @@ style="min-height:100vh;">
 <!-- IZQUIERDA -->
 
 
-<div class="column is-6"
+<div class="column is-6 hero-text"
 
 style="
 
-padding:40px;
+min-height:100vh;
 
 display:flex;
 
-justify-content:center;
-
 align-items:center;
 
+justify-content:center;
+
+padding:60px;
+
 ">
 
 
 
-<div style="
-width:100%;
-max-width:520px;
+<div style="max-width:520px;width:100%">
+
+
+
+
+
+<p class="title logo"
+
+style="
+color:#b51d2a;
+letter-spacing:3px;
 ">
 
-
-
-
-
-<p class="title is-2" 
-style="color:#b51d2a; letter-spacing:3px;">
 
 SAMBORO
+
 
 </p>
 
@@ -70,12 +124,15 @@ SAMBORO
 
 
 
+<h1 class="title main-title has-text-weight-light"
 
-<h1 class="title is-1 has-text-weight-light"
-style="color:#2c2c2c;">
+style="
+color:#2c2c2c;
+font-size:4rem;
+">
 
 
-Registro de 
+Registro de
 
 <span style="color:#b51d2a;">
 
@@ -90,8 +147,13 @@ seguimiento
 
 
 
-<p class="subtitle is-5"
-style="color:#555; line-height:1.6;">
+
+<p class="subtitle subtitle-mobile"
+
+style="
+color:#555;
+line-height:1.5;
+">
 
 
 Plataforma web diseñada para registrar,
@@ -105,24 +167,22 @@ dentro de Samboro.
 
 
 
-
 <br>
 
 
 
 
 
-<div class="box"
+<div class="box form-box"
+
 
 style="
 
-border-radius:15px;
+border-radius:18px;
 
-box-shadow:0 15px 40px rgba(0,0,0,.18);
+background:rgba(74,74,74,.88);
 
-background:rgba(74,74,74,.90);
-
-padding:30px;
+box-shadow:0 15px 35px rgba(0,0,0,.18);
 
 ">
 
@@ -131,9 +191,12 @@ padding:30px;
 
 
 <h2 class="title is-4"
+
 style="color:white;">
 
+
 Registro de no compra
+
 
 </h2>
 
@@ -142,7 +205,9 @@ Registro de no compra
 
 
 
+
 <form id="registroForm">
+
 
 
 
@@ -160,11 +225,9 @@ Usuario
 
 
 
-<input 
+<input
 
-class="input is-medium"
-
-type="text"
+class="input"
 
 id="usuario"
 
@@ -174,17 +237,14 @@ required
 
 
 style="
-
-background:rgba(255,255,255,.12);
-
-color:white;
-
+background:rgba(255,255,255,.15);
 border:none;
-
+color:white;
 ">
 
 
 </div>
+
 
 
 
@@ -204,64 +264,65 @@ Motivo de no compra
 
 
 
-<div class="select is-fullwidth is-medium">
+
+<div class="select is-fullwidth">
 
 
 <select
 
 id="motivo"
 
-style="
-
-background:#5a5a5a;
-
-color:white;
-
-border:none;
-
-">
+style="width:100%;">
 
 
 <option>
+
 Seleccione una opción
+
 </option>
 
 
 <option>
+
 Precio alto
+
 </option>
 
 
 <option>
+
 Cliente compara opciones
+
 </option>
 
 
 <option>
+
 No encontró producto
+
 </option>
 
 
 <option>
+
 Lo va a pensar
+
 </option>
 
 
 <option>
-Falta de presupuesto
-</option>
 
-
-<option>
 Otro
-</option>
 
+</option>
 
 
 </select>
 
 
+
 </div>
+
 
 
 </div>
@@ -279,9 +340,12 @@ Otro
 <label class="label"
 style="color:white;">
 
+
 Comentario adicional
 
+
 </label>
+
 
 
 
@@ -293,18 +357,15 @@ id="comentario"
 
 placeholder="Detalle del cliente..."
 
+
 style="
-
-background:rgba(255,255,255,.12);
-
-color:white;
-
+background:rgba(255,255,255,.15);
 border:none;
-
+color:white;
 ">
 
-
 </textarea>
+
 
 
 </div>
@@ -317,7 +378,8 @@ border:none;
 
 <button
 
-class="button is-medium is-fullwidth"
+class="button is-fullwidth"
+
 
 style="
 
@@ -327,7 +389,7 @@ color:white;
 
 border-radius:30px;
 
-border:none;
+font-weight:bold;
 
 ">
 
@@ -340,16 +402,12 @@ Guardar registro
 
 
 
-
 </form>
 
 
 
 
-
 </div>
-
-
 
 
 
@@ -358,8 +416,6 @@ Guardar registro
 
 
 </div>
-
-
 
 
 
@@ -370,15 +426,16 @@ Guardar registro
 <!-- IMAGEN -->
 
 
-<div class="column is-6"
+<div class="column is-6 image-mobile"
+
 
 style="
 
 min-height:100vh;
 
+overflow:hidden;
+
 ">
-
-
 
 
 
@@ -393,9 +450,9 @@ width:100%;
 
 height:100%;
 
-min-height:100vh;
-
 object-fit:cover;
+
+min-height:100vh;
 
 ">
 
@@ -421,27 +478,22 @@ object-fit:cover;
 
 document
 .getElementById("registroForm")
-.addEventListener("submit", function(e){
+.addEventListener("submit",function(e){
 
 
 e.preventDefault();
 
 
-
 let datos={
 
-
 usuario:
-document.getElementById("usuario").value,
-
+usuario.value,
 
 motivo:
-document.getElementById("motivo").value,
-
+motivo.value,
 
 comentario:
-document.getElementById("comentario").value
-
+comentario.value
 
 };
 
@@ -457,28 +509,19 @@ method:"POST",
 
 mode:"no-cors",
 
-headers:{
-
-"Content-Type":"application/json"
-
-},
-
-
 body:JSON.stringify(datos)
 
+}
 
-})
+)
+
 
 
 .then(()=>{
 
-
 alert("Registro guardado correctamente");
 
-
-document
-.getElementById("registroForm")
-.reset();
+this.reset();
 
 
 });
