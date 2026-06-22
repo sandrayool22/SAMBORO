@@ -6,19 +6,21 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Samboro | Registro de seguimiento</title>
+<title>Samboro | Perfil vendedor</title>
 
 
 <link rel="stylesheet" 
 href="https://cdn.jsdelivr.net/npm/bulma@1.0.4/css/bulma.min.css">
 
 
+
 <style>
+
 
 @media(max-width:768px){
 
 
-.hero-text{
+.contenido{
 
 padding:25px !important;
 
@@ -27,58 +29,22 @@ text-align:center;
 }
 
 
-
 .logo{
 
 font-size:2rem !important;
 
-text-align:center;
-
 }
 
 
-
-.main-title{
+.titulo{
 
 font-size:2.5rem !important;
 
-line-height:1.1;
-
-text-align:center;
-
 }
 
 
 
-.subtitle-mobile{
-
-font-size:1rem !important;
-
-text-align:center;
-
-}
-
-
-
-.form-box{
-
-padding:20px !important;
-
-text-align:left;
-
-}
-
-
-
-.form-box h2{
-
-text-align:center;
-
-}
-
-
-
-.image-mobile{
+.imagen{
 
 min-height:300px !important;
 
@@ -92,11 +58,14 @@ min-height:300px !important;
 </style>
 
 
+
 </head>
 
 
 
 <body style="background:#eee8df;">
+
+
 
 
 
@@ -110,10 +79,12 @@ min-height:300px !important;
 
 
 
-<!-- IZQUIERDA -->
+
+<!-- LADO IZQUIERDO -->
 
 
-<div class="column is-6 hero-text"
+
+<div class="column is-6 contenido"
 
 style="
 
@@ -131,7 +102,10 @@ padding:60px;
 
 
 
-<div style="max-width:520px;width:100%">
+
+
+<div style="max-width:500px;width:100%">
+
 
 
 
@@ -140,8 +114,11 @@ padding:60px;
 <p class="title logo"
 
 style="
+
 color:#b51d2a;
+
 letter-spacing:3px;
+
 ">
 
 
@@ -154,11 +131,15 @@ SAMBORO
 
 
 
-<h1 class="title main-title has-text-weight-light"
+
+<h1 class="title titulo has-text-weight-light"
 
 style="
+
 color:#2c2c2c;
+
 font-size:4rem;
+
 ">
 
 
@@ -178,20 +159,26 @@ seguimiento
 
 
 
-<p class="subtitle subtitle-mobile"
+
+<p class="subtitle is-5"
 
 style="
+
 color:#555;
-line-height:1.5;
+
+line-height:1.6;
+
 ">
 
 
-Plataforma web diseñada para registrar,
-analizar y mejorar las oportunidades comerciales
-dentro de Samboro.
+Antes de iniciar registra tu información
+para identificar tus registros comerciales.
 
 
 </p>
+
+
+
 
 
 
@@ -203,8 +190,8 @@ dentro de Samboro.
 
 
 
-<div class="box form-box"
 
+<div class="box"
 
 style="
 
@@ -214,7 +201,10 @@ background:rgba(74,74,74,.88);
 
 box-shadow:0 15px 35px rgba(0,0,0,.18);
 
+padding:30px;
+
 ">
+
 
 
 
@@ -222,10 +212,10 @@ box-shadow:0 15px 35px rgba(0,0,0,.18);
 
 <h2 class="title is-4"
 
-style="color:white;">
+style="color:white;text-align:center;">
 
 
-Registro de no compra
+Configuración de vendedor
 
 
 </h2>
@@ -236,7 +226,7 @@ Registro de no compra
 
 
 
-<form id="registroForm">
+<form id="perfilForm">
 
 
 
@@ -247,30 +237,37 @@ Registro de no compra
 
 
 <label class="label"
+
 style="color:white;">
 
-Usuario
+Vendedor
 
 </label>
 
 
 
+
 <input
 
-class="input"
+class="input is-medium"
 
-id="usuario"
+id="vendedor"
 
-placeholder="Ingrese usuario"
+placeholder="Ingrese su nombre"
 
 required
 
 
 style="
+
 background:rgba(255,255,255,.15);
+
 border:none;
+
 color:white;
+
 ">
+
 
 
 </div>
@@ -281,68 +278,88 @@ color:white;
 
 
 
-
 <div class="field">
 
 
 <label class="label"
+
 style="color:white;">
 
-Motivo de no compra
+
+Sucursal
+
 
 </label>
 
 
 
 
-<div class="select is-fullwidth">
+
+<div class="select is-fullwidth is-medium">
 
 
 <select
 
-id="motivo"
+id="sucursal"
 
-style="width:100%;">
-
-
-<option>
-
-Seleccione una opción
-
-</option>
+style="width:100%">
 
 
-<option>
 
-Precio alto
+<option value="">
+
+Seleccione sucursal
 
 </option>
 
 
 <option>
 
-Cliente compara opciones
+Centro Logistico
+
+</option>
+
+<option>
+
+Decocity
+
+</option>
+
+<option>
+
+Outlet Zona 7
+
+</option>
+
+
+<option>
+Zona 7
+</option>
+
+  <option>
+Zona 9
+</option>
+
+    <option>
+Zona 11
+</option>
+<option>
+
+Zona 17
 
 </option>
 
 
 <option>
 
-No encontró producto
+San Cristobal
 
 </option>
 
 
 <option>
 
-Lo va a pensar
-
-</option>
-
-
-<option>
-
-Otro
+Viterra
 
 </option>
 
@@ -355,52 +372,17 @@ Otro
 
 
 
-</div>
-
-
-
-
-
-
-
-
-<div class="field">
-
-
-<label class="label"
-style="color:white;">
-
-
-Comentario adicional
-
-
-</label>
-
-
-
-
-<textarea
-
-class="textarea"
-
-id="comentario"
-
-placeholder="Detalle del cliente..."
-
-
-style="
-background:rgba(255,255,255,.15);
-border:none;
-color:white;
-">
-
-</textarea>
-
-
 
 </div>
 
 
+
+
+
+
+
+
+<br>
 
 
 
@@ -408,7 +390,7 @@ color:white;
 
 <button
 
-class="button is-fullwidth"
+class="button is-fullwidth is-medium"
 
 
 style="
@@ -419,15 +401,19 @@ color:white;
 
 border-radius:30px;
 
+border:none;
+
 font-weight:bold;
 
 ">
 
 
-Guardar registro
+Ingresar al sistema
 
 
 </button>
+
+
 
 
 
@@ -437,13 +423,6 @@ Guardar registro
 
 
 
-</div>
-
-
-
-
-</div>
-
 
 </div>
 
@@ -451,27 +430,39 @@ Guardar registro
 
 
 
+</div>
 
 
-<!-- IMAGEN -->
+
+</div>
 
 
-<div class="column is-6 image-mobile"
 
 
-style="
 
-min-height:100vh;
 
-overflow:hidden;
 
-">
+
+
+<!-- LADO DERECHO -->
+
+
+
+
+<div class="column is-6 imagen"
+
+
+style="min-height:100vh;">
+
+
 
 
 
 <img
 
+
 src="https://www.samboro.com/wp-content/uploads/2025/12/342-GRIS-VT00015606-es-Okc92Xikw6RZmswN.jpg"
+
 
 
 style="
@@ -480,16 +471,15 @@ width:100%;
 
 height:100%;
 
-object-fit:cover;
-
 min-height:100vh;
+
+object-fit:cover;
 
 ">
 
 
 
 </div>
-
 
 
 
@@ -507,64 +497,78 @@ min-height:100vh;
 
 
 document
-.getElementById("registroForm")
+
+.getElementById("perfilForm")
+
 .addEventListener("submit",function(e){
+
 
 
 e.preventDefault();
 
 
-let datos={
-
-usuario:
-usuario.value,
-
-motivo:
-motivo.value,
-
-comentario:
-comentario.value
-
-};
 
 
 
-fetch(
+let vendedor = document
 
-"https://script.google.com/macros/s/AKfycbwJGF6YvAQi_YrNS90aJyH7QTCfkqJcrtjMpzrXqLGqM6_0HPdGI-pCeSs65zuEmD6Aug/exec",
+.getElementById("vendedor")
 
-{
-
-method:"POST",
-
-mode:"no-cors",
-
-body:JSON.stringify(datos)
-
-}
-
-)
+.value;
 
 
 
-.then(()=>{
 
-alert("Registro guardado correctamente");
 
-this.reset();
+let sucursal = document
+
+.getElementById("sucursal")
+
+.value;
+
+
+
+
+
+
+localStorage.setItem(
+
+"vendedor",
+
+vendedor
+
+);
+
+
+
+localStorage.setItem(
+
+"sucursal",
+
+sucursal
+
+);
+
+
+
+
+
+
+window.location.href="index.html";
+
 
 
 });
 
-
-
-});
 
 
 </script>
 
 
 
+
+
 </body>
+
 
 </html>
