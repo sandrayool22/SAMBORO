@@ -467,38 +467,15 @@ document.getElementById("mostrarVendedor").innerHTML = vendedor;
 document.getElementById("mostrarSucursal").innerHTML = sucursal;
 
 
-// GUARDAR REGISTRO
+// GUARDAR REGISTRO (Sin límites, pueden registrar las veces que quieran)
 document.getElementById("registroForm").addEventListener("submit", function(e){
     e.preventDefault();
 
-    let hoy = new Date().toLocaleDateString();
-    let fecha = localStorage.getItem("fechaRegistro");
-    let tiene = localStorage.getItem("tieneRegistros");
-
-    // VALIDACIÓN: Si ya registró HOY, se solicita obligatoriamente la contraseña
-    if(fecha === hoy && tiene === "SI"){
-        let intento = prompt("Ya has realizado un registro hoy. Para ingresar un registro adicional, introduce la contraseña de autorización:");
-        
-        // Si cancela o deja vacío
-        if (intento === null) {
-            return; 
-        }
-        
-        // Si la contraseña es incorrecta
-        if (intento !== CLAVE_MAESTRA) {
-            alert("Contraseña incorrecta. No tienes permisos para duplicar registros hoy.");
-            return;
-        }
-    }
-
-    // Si pasa la validación (o si es su primer registro del día), preparamos los datos
     let datos = {
         vendedor: vendedor,
         sucursal: sucursal,
         respuesta: document.getElementById("respuesta").value
     };
-
-    console.log("Enviando datos...", datos);
 
     // Enviar a Google Apps Script
     fetch(
@@ -510,12 +487,8 @@ document.getElementById("registroForm").addEventListener("submit", function(e){
         }
     )
     .then(() => {
-        // Guardamos en el almacenamiento que ya tiene al menos un registro hoy
-        localStorage.setItem("fechaRegistro", hoy);
-        localStorage.setItem("tieneRegistros", "SI");
-
         alert("Registro guardado correctamente.");
-        document.getElementById("registroForm").reset();
+        document.getElementById("registroForm").reset(); // Limpia el cuadro de texto para el siguiente registro
     })
     .catch(err => {
         console.error("Error al enviar:", err);
@@ -524,28 +497,20 @@ document.getElementById("registroForm").addEventListener("submit", function(e){
 });
 
 
-// CAMBIAR USUARIO
+// CAMBIAR USUARIO (Aquí sí pide contraseña)
 function cambiarUsuario(){
-    let hoy = new Date().toLocaleDateString();
-    let fecha = localStorage.getItem("fechaRegistro");
-    let tiene = localStorage.getItem("tieneRegistros");
-
-    // Si ya registró hoy, requiere contraseña para poder cambiar de usuario
-    if(fecha === hoy && tiene === "SI"){
-        let intento = prompt("Para cambiar de usuario habiendo registrado hoy, introduce la contraseña:");
-        if (intento === null) return;
-        
-        if (intento !== CLAVE_MAESTRA) {
-            alert("Contraseña incorrecta.");
-            return;
+    let intento = prompt("Para cambiar de usuario, introduce la contraseña de autorización:");
+    
+    if (intento === null) return; // Si cancela, no hace nada
+    
+    if (intento === CLAVE_MAESTRA) {
+        let confirmar = confirm("¿Desea cerrar sesión y cambiar de usuario?");
+        if(confirmar){
+            localStorage.clear();
+            window.location.href = "perfil.html";
         }
-    }
-
-    // Confirmación estándar si no hay registros o si puso la clave bien
-    let confirmar = confirm("¿Desea cerrar sesión y cambiar de usuario?");
-    if(confirmar){
-        localStorage.clear();
-        window.location.href = "perfil.html";
+    } else {
+        alert("Contraseña incorrecta. No puedes cambiar de usuario.");
     }
 }
 
