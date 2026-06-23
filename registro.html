@@ -42,7 +42,6 @@ font-size:2.5rem !important;
 }
 
 
-
 .imagen{
 
 min-height:300px !important;
@@ -58,7 +57,6 @@ min-height:300px !important;
 
 
 </head>
-
 
 
 
@@ -78,10 +76,11 @@ min-height:300px !important;
 
 
 
-<!-- IZQUIERDA -->
+<!-- FORMULARIO -->
 
 
 <div class="column is-6 contenido"
+
 
 style="
 
@@ -108,15 +107,10 @@ padding:60px;
 
 
 
+
 <p class="title logo"
 
-style="
-
-color:#b51d2a;
-
-letter-spacing:3px;
-
-">
+style="color:#b51d2a;letter-spacing:3px;">
 
 SAMBORO
 
@@ -128,15 +122,11 @@ SAMBORO
 
 
 
+
 <h1 class="title titulo has-text-weight-light"
 
-style="
 
-color:#2c2c2c;
-
-font-size:4rem;
-
-">
+style="color:#2c2c2c;font-size:4rem;">
 
 
 Registro de
@@ -158,22 +148,14 @@ cliente
 
 <p class="subtitle is-5"
 
-style="
-
-color:#555;
-
-line-height:1.6;
-
-">
+style="color:#555;">
 
 
 Registra la información del cliente
-para conocer sus necesidades
-y mejorar la experiencia comercial.
+para conocer sus necesidades comerciales.
 
 
 </p>
-
 
 
 
@@ -189,9 +171,7 @@ y mejorar la experiencia comercial.
 
 
 
-
-
-<!-- DATOS DEL VENDEDOR -->
+<!-- DATOS USUARIO -->
 
 
 <div class="box"
@@ -199,13 +179,11 @@ y mejorar la experiencia comercial.
 
 style="
 
-border-radius:15px;
-
 background:#b51d2a;
 
 color:white;
 
-box-shadow:0 10px:25px rgba(0,0,0,.15);
+border-radius:15px;
 
 ">
 
@@ -213,7 +191,7 @@ box-shadow:0 10px:25px rgba(0,0,0,.15);
 
 <p>
 
-Vendedor activo:
+Vendedor:
 
 <b id="mostrarVendedor"></b>
 
@@ -243,7 +221,7 @@ Sucursal:
 
 
 
-<!-- FORMULARIO -->
+<!-- FORM -->
 
 
 <div class="box"
@@ -251,11 +229,9 @@ Sucursal:
 
 style="
 
-border-radius:18px;
-
 background:rgba(74,74,74,.88);
 
-box-shadow:0 15px 35px rgba(0,0,0,.18);
+border-radius:18px;
 
 padding:30px;
 
@@ -265,16 +241,9 @@ padding:30px;
 
 
 
-
 <h2 class="title is-4"
 
-style="
-
-color:white;
-
-text-align:center;
-
-">
+style="color:white;text-align:center;">
 
 
 ¿Qué fue lo que lo trajo por aquí hoy?
@@ -288,26 +257,20 @@ text-align:center;
 
 
 
-
 <form id="registroForm">
 
 
 
 
 
-
-<div class="field">
-
-
 <label class="label"
 
 style="color:white;">
 
-
-Respuesta del cliente
-
+Respuesta cliente
 
 </label>
+
 
 
 
@@ -321,9 +284,10 @@ class="textarea"
 id="respuesta"
 
 
-placeholder="Ejemplo: Estoy buscando cambiar el piso de mi casa..."
-
 required
+
+
+placeholder="Ejemplo: Busco remodelar mi casa..."
 
 
 style="
@@ -345,9 +309,8 @@ border:none;
 
 
 
-</div>
 
-
+<br>
 
 
 
@@ -355,7 +318,6 @@ border:none;
 
 
 <button
-
 
 class="button is-fullwidth is-medium"
 
@@ -368,8 +330,6 @@ color:white;
 
 border-radius:30px;
 
-border:none;
-
 font-weight:bold;
 
 ">
@@ -380,13 +340,29 @@ Guardar registro
 
 </button>
 
+
+
+
+
+
+
+</form>
+
+
+
+
+
+
 <br>
+
+
+
+
 
 <button
 
-type="button"
-
 onclick="cambiarUsuario()"
+
 
 class="button is-light is-fullwidth">
 
@@ -401,16 +377,9 @@ Cambiar usuario
 
 
 
-</form>
-
-
-
-
-
-
-
-
 </div>
+
+
 
 
 
@@ -448,7 +417,6 @@ style="min-height:100vh;">
 src="https://www.samboro.com/wp-content/uploads/2025/12/342-GRIS-VT00015606-es-Okc92Xikw6RZmswN.jpg"
 
 
-
 style="
 
 width:100%;
@@ -463,21 +431,31 @@ object-fit:cover;
 
 
 
+
+
+</div>
+
+
+
+
+
+
+
 </div>
 
 
 
 
-
-
-
-</div>
 
 
 <script>
 
 
-// OBTENER DATOS DEL PERFIL
+
+
+
+// DATOS DEL PERFIL
+
 
 let vendedor = localStorage.getItem("vendedor");
 
@@ -486,7 +464,11 @@ let sucursal = localStorage.getItem("sucursal");
 
 
 
-// SI NO EXISTE PERFIL, REGRESA A PERFIL
+
+
+
+// VALIDAR QUE EXISTA PERFIL
+
 
 if(!vendedor || !sucursal){
 
@@ -502,23 +484,59 @@ window.location.href="perfil.html";
 
 
 
-// MOSTRAR DATOS EN PANTALLA
+// MOSTRAR DATOS
 
 
-document
+document.getElementById("mostrarVendedor").innerHTML = vendedor;
 
-.getElementById("mostrarVendedor")
 
-.innerHTML = vendedor;
-
+document.getElementById("mostrarSucursal").innerHTML = sucursal;
 
 
 
-document
 
-.getElementById("mostrarSucursal")
 
-.innerHTML = sucursal;
+
+
+
+
+// BLOQUEAR SI YA REGISTRO HOY
+
+
+
+window.addEventListener("pageshow",function(){
+
+
+
+let hoy = new Date().toLocaleDateString();
+
+
+
+let fecha = localStorage.getItem("fechaRegistro");
+
+
+
+let tiene = localStorage.getItem("tieneRegistros");
+
+
+
+
+if(fecha == hoy && tiene == "SI"){
+
+
+document.getElementById("respuesta").disabled = true;
+
+
+alert(
+"Este usuario ya realizó registros el día de hoy."
+);
+
+
+}
+
+
+
+});
 
 
 
@@ -541,6 +559,41 @@ document
 
 
 e.preventDefault();
+
+
+
+
+
+
+let hoy = new Date().toLocaleDateString();
+
+
+
+let fecha = localStorage.getItem("fechaRegistro");
+
+
+
+let tiene = localStorage.getItem("tieneRegistros");
+
+
+
+
+
+if(fecha == hoy && tiene == "SI"){
+
+
+alert(
+"No puede registrar nuevamente hoy."
+);
+
+
+return;
+
+
+}
+
+
+
 
 
 
@@ -582,7 +635,6 @@ console.log(datos);
 
 
 
-
 fetch(
 
 
@@ -604,8 +656,8 @@ body:JSON.stringify(datos)
 }
 
 
-
 )
+
 
 
 
@@ -619,19 +671,13 @@ body:JSON.stringify(datos)
 
 
 
-// GUARDAR QUE YA HIZO REGISTROS HOY
-
-
-
 localStorage.setItem(
 
 "fechaRegistro",
 
-new Date().toLocaleDateString()
+hoy
 
 );
-
-
 
 
 
@@ -649,43 +695,28 @@ localStorage.setItem(
 
 
 
-alert("Registro guardado correctamente");
+alert(
+
+"Registro guardado correctamente"
+
+);
 
 
 
 
-document
 
-.getElementById("registroForm")
 
-.reset();
+document.getElementById("registroForm").reset();
 
+
+
+
+document.getElementById("respuesta").disabled=true;
 
 
 
 
 })
-
-
-
-
-
-
-
-
-.catch(error=>{
-
-
-
-console.log(error);
-
-
-
-alert("Error al guardar registro");
-
-
-
-});
 
 
 
@@ -717,30 +748,24 @@ let hoy = new Date().toLocaleDateString();
 
 
 
-let fechaGuardada = localStorage.getItem("fechaRegistro");
+let fecha = localStorage.getItem("fechaRegistro");
 
 
 
-let tieneRegistros = localStorage.getItem("tieneRegistros");
+let tiene = localStorage.getItem("tieneRegistros");
 
 
 
 
 
 
-if(
-
-fechaGuardada == hoy &&
-
-tieneRegistros == "SI"
-
-){
+if(fecha == hoy && tiene == "SI"){
 
 
 
 alert(
 
-"No puede cambiar usuario porque ya existen registros realizados hoy."
+"No puede cambiar usuario porque ya existen registros hoy."
 
 );
 
@@ -768,27 +793,13 @@ let confirmar = confirm(
 
 
 
-
 if(confirmar){
 
 
-
-localStorage.removeItem("vendedor");
-
-
-localStorage.removeItem("sucursal");
-
-
-localStorage.removeItem("tieneRegistros");
-
-
-localStorage.removeItem("fechaRegistro");
-
-
+localStorage.clear();
 
 
 window.location.href="perfil.html";
-
 
 
 }
@@ -803,6 +814,8 @@ window.location.href="perfil.html";
 
 
 </script>
+
+
 
 
 
