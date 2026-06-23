@@ -13,7 +13,6 @@
 href="https://cdn.jsdelivr.net/npm/bulma@1.0.4/css/bulma.min.css">
 
 
-
 <style>
 
 
@@ -43,12 +42,12 @@ font-size:2.5rem !important;
 }
 
 
+
 .imagen{
 
 min-height:300px !important;
 
 }
-
 
 
 }
@@ -192,7 +191,7 @@ y mejorar la experiencia comercial.
 
 
 
-<!-- DATOS FIJOS PRUEBA -->
+<!-- DATOS DEL VENDEDOR -->
 
 
 <div class="box"
@@ -206,7 +205,7 @@ background:#b51d2a;
 
 color:white;
 
-box-shadow:0 10px 25px rgba(0,0,0,.15);
+box-shadow:0 10px:25px rgba(0,0,0,.15);
 
 ">
 
@@ -216,11 +215,7 @@ box-shadow:0 10px 25px rgba(0,0,0,.15);
 
 Vendedor activo:
 
-<b>
-
-RCIFUENTES
-
-</b>
+<b id="mostrarVendedor"></b>
 
 </p>
 
@@ -231,11 +226,7 @@ RCIFUENTES
 
 Sucursal:
 
-<b>
-
-San Cristóbal
-
-</b>
+<b id="mostrarSucursal"></b>
 
 </p>
 
@@ -480,6 +471,64 @@ object-fit:cover;
 
 
 
+// OBTENER DATOS DEL PERFIL
+
+
+
+let vendedor = localStorage.getItem("vendedor");
+
+let sucursal = localStorage.getItem("sucursal");
+
+
+
+
+
+// SI NO EXISTE PERFIL REGRESA A PERFIL.HTML
+
+
+if(!vendedor || !sucursal){
+
+
+window.location.href="perfil.html";
+
+
+}
+
+
+
+
+
+
+
+// MOSTRAR DATOS
+
+
+document
+
+.getElementById("mostrarVendedor")
+
+.innerHTML = vendedor;
+
+
+
+document
+
+.getElementById("mostrarSucursal")
+
+.innerHTML = sucursal;
+
+
+
+
+
+
+
+
+
+// GUARDAR REGISTRO
+
+
+
 document
 
 .getElementById("registroForm")
@@ -495,13 +544,14 @@ e.preventDefault();
 
 
 
+
 let datos = {
 
 
-vendedor:"RCIFUENTES",
+vendedor:vendedor,
 
 
-sucursal:"San Cristóbal",
+sucursal:sucursal,
 
 
 respuesta:
@@ -523,6 +573,7 @@ document
 
 
 console.log(datos);
+
 
 
 
@@ -597,7 +648,9 @@ alert("Error al guardar registro");
 
 
 
+
 });
+
 
 
 
@@ -612,6 +665,5 @@ alert("Error al guardar registro");
 
 
 </body>
-
 
 </html>
