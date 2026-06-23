@@ -13,6 +13,7 @@
 href="https://cdn.jsdelivr.net/npm/bulma@1.0.4/css/bulma.min.css">
 
 
+
 <style>
 
 
@@ -42,7 +43,6 @@ font-size:2.5rem !important;
 }
 
 
-
 .imagen{
 
 min-height:300px !important;
@@ -50,14 +50,16 @@ min-height:300px !important;
 }
 
 
+
 }
+
 
 
 </style>
 
 
-
 </head>
+
 
 
 
@@ -77,7 +79,7 @@ min-height:300px !important;
 
 
 
-<!-- PARTE IZQUIERDA -->
+<!-- IZQUIERDA -->
 
 
 <div class="column is-6 contenido"
@@ -107,7 +109,6 @@ padding:60px;
 
 
 
-
 <p class="title logo"
 
 style="
@@ -128,9 +129,7 @@ SAMBORO
 
 
 
-
 <h1 class="title titulo has-text-weight-light"
-
 
 style="
 
@@ -151,7 +150,6 @@ cliente
 
 
 </h1>
-
 
 
 
@@ -192,7 +190,9 @@ y mejorar la experiencia comercial.
 
 
 
-<!-- INFORMACION VENDEDOR -->
+
+
+<!-- DATOS FIJOS PRUEBA -->
 
 
 <div class="box"
@@ -212,13 +212,15 @@ box-shadow:0 10px 25px rgba(0,0,0,.15);
 
 
 
-
-
 <p>
 
 Vendedor activo:
 
-<b id="mostrarVendedor"></b>
+<b>
+
+RCIFUENTES
+
+</b>
 
 </p>
 
@@ -229,7 +231,11 @@ Vendedor activo:
 
 Sucursal:
 
-<b id="mostrarSucursal"></b>
+<b>
+
+San Cristóbal
+
+</b>
 
 </p>
 
@@ -263,6 +269,7 @@ box-shadow:0 15px 35px rgba(0,0,0,.18);
 padding:30px;
 
 ">
+
 
 
 
@@ -315,7 +322,6 @@ Respuesta del cliente
 
 
 
-
 <textarea
 
 
@@ -345,6 +351,9 @@ border:none;
 
 
 
+
+
+
 </div>
 
 
@@ -355,6 +364,7 @@ border:none;
 
 
 <button
+
 
 class="button is-fullwidth is-medium"
 
@@ -385,6 +395,7 @@ Guardar registro
 
 
 
+
 </form>
 
 
@@ -405,7 +416,6 @@ Guardar registro
 </div>
 
 
-
 </div>
 
 
@@ -416,7 +426,7 @@ Guardar registro
 
 
 
-<!-- IMAGEN DERECHA -->
+<!-- IMAGEN -->
 
 
 <div class="column is-6 imagen"
@@ -427,11 +437,11 @@ style="min-height:100vh;">
 
 
 
-
 <img
 
 
 src="https://www.samboro.com/wp-content/uploads/2025/12/342-GRIS-VT00015606-es-Okc92Xikw6RZmswN.jpg"
+
 
 
 style="
@@ -445,8 +455,6 @@ min-height:100vh;
 object-fit:cover;
 
 ">
-
-
 
 
 
@@ -472,63 +480,6 @@ object-fit:cover;
 
 
 
-// VALIDAR PERFIL
-
-
-
-let vendedor = localStorage.getItem("vendedor");
-
-let sucursal = localStorage.getItem("sucursal");
-
-
-
-
-
-if(!vendedor || !sucursal){
-
-
-window.location.href="perfil.html";
-
-
-}
-
-
-
-
-
-
-
-// MOSTRAR DATOS
-
-
-
-document
-
-.getElementById("mostrarVendedor")
-
-.innerHTML = vendedor;
-
-
-
-
-document
-
-.getElementById("mostrarSucursal")
-
-.innerHTML = sucursal;
-
-
-
-
-
-
-
-
-
-// ENVIAR REGISTRO
-
-
-
 document
 
 .getElementById("registroForm")
@@ -546,18 +497,32 @@ e.preventDefault();
 
 let datos = {
 
-vendedor:vendedor,
 
-sucursal:sucursal,
+vendedor:"RCIFUENTES",
+
+
+sucursal:"San Cristóbal",
+
 
 respuesta:
-document.getElementById("respuesta").value
+
+document
+
+.getElementById("respuesta")
+
+.value
+
+
 
 };
 
 
-console.log(datos);
 
+
+
+
+
+console.log(datos);
 
 
 
@@ -586,7 +551,10 @@ body:JSON.stringify(datos)
 }
 
 
+
 )
+
+
 
 
 
@@ -595,9 +563,7 @@ body:JSON.stringify(datos)
 .then(()=>{
 
 
-
 alert("Registro guardado correctamente");
-
 
 
 document
@@ -609,6 +575,7 @@ document
 
 
 })
+
 
 
 
@@ -636,6 +603,7 @@ alert("Error al guardar registro");
 
 
 
+
 </script>
 
 
@@ -644,5 +612,6 @@ alert("Error al guardar registro");
 
 
 </body>
+
 
 </html>
