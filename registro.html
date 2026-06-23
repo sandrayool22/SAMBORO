@@ -446,6 +446,9 @@ let sucursal = localStorage.getItem("sucursal");
 // CONTRASEÑA AUTORIZADA
 const CLAVE_MAESTRA = "SAM2026";
 
+// VARIABLE CANDADO: Evita el doble envío a nivel lógico
+let yaEstaEnviando = false;
+
 // Bloqueo de historial si intentan forzar la entrada sin sesión
 if(!vendedor || !sucursal){
     window.location.replace("perfil.html");
@@ -460,10 +463,19 @@ if(!vendedor || !sucursal){
 document.getElementById("registroForm").addEventListener("submit", function(e){
     e.preventDefault();
 
-    // 1. OBTENEMOS EL BOTÓN Y ACTIVAMOS EL MODO CARGANDO
+    // SÚPER CANDADO: Si ya se está enviando un registro, ignora por completo cualquier otro clic
+    if (yaEstaEnviando) {
+        return; 
+    }
+
+    // Activamos el candado lógico
+    yaEstaEnviando = true;
+
+    // OBTENEMOS EL BOTÓN Y ACTIVAMOS EL MODO CARGANDO FISICO Y VISUAL
     let boton = document.getElementById("btnGuardar");
-    boton.classList.add("is-loading"); // Añade la animación de Bulma
-    boton.disabled = true;             // Evita que hagan doble clic
+    boton.classList.add("is-loading");    // Añade la animación de Bulma
+    boton.classList.add("is-disabled");   // Bloqueo visual de Bulma
+    boton.disabled = true;                 // Bloqueo nativo del navegador
 
     let datos = {
         vendedor: vendedor,
@@ -488,8 +500,10 @@ document.getElementById("registroForm").addEventListener("submit", function(e){
         alert("Hubo un problema al conectar con el servidor.");
     })
     .finally(() => {
-        // 2. CUANDO TERMINE (BIEN O MAL), QUITAMOS EL CARGANDO Y REACTIVAMOS EL BOTÓN
+        // CUANDO TERMINE TODO EL PROCESO, LIBERAMOS LOS CANDADOS
+        yaEstaEnviando = false;
         boton.classList.remove("is-loading");
+        boton.classList.remove("is-disabled");
         boton.disabled = false;
     });
 });
