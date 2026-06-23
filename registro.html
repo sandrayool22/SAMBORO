@@ -457,17 +457,17 @@ let sucursal = localStorage.getItem("sucursal");
 // CONTRASEÑA AUTORIZADA
 const CLAVE_MAESTRA = "SAM2026";
 
-// VALIDAR QUE EXISTA PERFIL
+// Cambiado a .replace() para borrar el historial si intentan forzar la entrada sin sesión
 if(!vendedor || !sucursal){
-    window.location.href="perfil.html";
+    window.location.replace("perfil.html");
+} else {
+    // MOSTRAR DATOS EN PANTALLA
+    document.getElementById("mostrarVendedor").innerHTML = vendedor;
+    document.getElementById("mostrarSucursal").innerHTML = sucursal;
 }
 
-// MOSTRAR DATOS EN PANTALLA
-document.getElementById("mostrarVendedor").innerHTML = vendedor;
-document.getElementById("mostrarSucursal").innerHTML = sucursal;
 
-
-// GUARDAR REGISTRO (Sin límites, pueden registrar las veces que quieran)
+// GUARDAR REGISTRO
 document.getElementById("registroForm").addEventListener("submit", function(e){
     e.preventDefault();
 
@@ -477,7 +477,6 @@ document.getElementById("registroForm").addEventListener("submit", function(e){
         respuesta: document.getElementById("respuesta").value
     };
 
-    // Enviar a Google Apps Script
     fetch(
         "https://script.google.com/macros/s/AKfycbwJGF6YvAQi_YrNS90aJyH7QTCfkqJcrtjMpzrXqLGqM6_0HPdGI-pCeSs65zuEmD6Aug/exec",
         {
@@ -488,7 +487,7 @@ document.getElementById("registroForm").addEventListener("submit", function(e){
     )
     .then(() => {
         alert("Registro guardado correctamente.");
-        document.getElementById("registroForm").reset(); // Limpia el cuadro de texto para el siguiente registro
+        document.getElementById("registroForm").reset(); 
     })
     .catch(err => {
         console.error("Error al enviar:", err);
@@ -497,17 +496,18 @@ document.getElementById("registroForm").addEventListener("submit", function(e){
 });
 
 
-// CAMBIAR USUARIO (Aquí sí pide contraseña)
+// CAMBIAR USUARIO
 function cambiarUsuario(){
     let intento = prompt("Para cambiar de usuario, introduce la contraseña de autorización:");
     
-    if (intento === null) return; // Si cancela, no hace nada
+    if (intento === null) return; 
     
     if (intento === CLAVE_MAESTRA) {
         let confirmar = confirm("¿Desea cerrar sesión y cambiar de usuario?");
         if(confirmar){
             localStorage.clear();
-            window.location.href = "perfil.html";
+            // Cambiado a .replace() para que al salir legalmente, no puedan volver con el botón "Adelante"
+            window.location.replace("perfil.html");
         }
     } else {
         alert("Contraseña incorrecta. No puedes cambiar de usuario.");
