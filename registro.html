@@ -474,20 +474,10 @@ object-fit:cover;
 </div>
 
 
-
-
-
-
-
 <script>
 
 
-
-
-
 // OBTENER DATOS DEL PERFIL
-
-
 
 let vendedor = localStorage.getItem("vendedor");
 
@@ -496,9 +486,7 @@ let sucursal = localStorage.getItem("sucursal");
 
 
 
-
-// SI NO EXISTE PERFIL REGRESA A PERFIL.HTML
-
+// SI NO EXISTE PERFIL, REGRESA A PERFIL
 
 if(!vendedor || !sucursal){
 
@@ -514,7 +502,7 @@ window.location.href="perfil.html";
 
 
 
-// MOSTRAR DATOS
+// MOSTRAR DATOS EN PANTALLA
 
 
 document
@@ -522,6 +510,7 @@ document
 .getElementById("mostrarVendedor")
 
 .innerHTML = vendedor;
+
 
 
 
@@ -557,8 +546,6 @@ e.preventDefault();
 
 
 
-
-
 let datos = {
 
 
@@ -581,21 +568,13 @@ document
 };
 
 
-localStorage.setItem(
-"fechaRegistro",
-new Date().toLocaleDateString()
-);
 
-
-localStorage.setItem(
-"tieneRegistros",
-"SI"
-);
 
 
 
 
 console.log(datos);
+
 
 
 
@@ -633,11 +612,46 @@ body:JSON.stringify(datos)
 
 
 
-
 .then(()=>{
 
 
+
+
+
+
+// GUARDAR QUE YA HIZO REGISTROS HOY
+
+
+
+localStorage.setItem(
+
+"fechaRegistro",
+
+new Date().toLocaleDateString()
+
+);
+
+
+
+
+
+localStorage.setItem(
+
+"tieneRegistros",
+
+"SI"
+
+);
+
+
+
+
+
+
+
 alert("Registro guardado correctamente");
+
+
 
 
 document
@@ -648,7 +662,11 @@ document
 
 
 
+
+
 })
+
+
 
 
 
@@ -658,12 +676,23 @@ document
 .catch(error=>{
 
 
+
 console.log(error);
+
 
 
 alert("Error al guardar registro");
 
 
+
+});
+
+
+
+
+
+
+
 });
 
 
@@ -672,8 +701,101 @@ alert("Error al guardar registro");
 
 
 
-});
 
+
+
+
+// CAMBIAR USUARIO
+
+
+
+function cambiarUsuario(){
+
+
+
+let hoy = new Date().toLocaleDateString();
+
+
+
+let fechaGuardada = localStorage.getItem("fechaRegistro");
+
+
+
+let tieneRegistros = localStorage.getItem("tieneRegistros");
+
+
+
+
+
+
+if(
+
+fechaGuardada == hoy &&
+
+tieneRegistros == "SI"
+
+){
+
+
+
+alert(
+
+"No puede cambiar usuario porque ya existen registros realizados hoy."
+
+);
+
+
+
+return;
+
+
+}
+
+
+
+
+
+
+
+let confirmar = confirm(
+
+"¿Desea cambiar de usuario?"
+
+);
+
+
+
+
+
+
+
+if(confirmar){
+
+
+
+localStorage.removeItem("vendedor");
+
+
+localStorage.removeItem("sucursal");
+
+
+localStorage.removeItem("tieneRegistros");
+
+
+localStorage.removeItem("fechaRegistro");
+
+
+
+
+window.location.href="perfil.html";
+
+
+
+}
+
+
+
+}
 
 
 
@@ -681,8 +803,6 @@ alert("Error al guardar registro");
 
 
 </script>
-
-
 
 
 
