@@ -446,7 +446,7 @@ let sucursal = localStorage.getItem("sucursal");
 // CONTRASEÑA AUTORIZADA
 const CLAVE_MAESTRA = "SAM2026";
 
-// Cambiado a .replace() para borrar el historial si intentan forzar la entrada sin sesión
+// Bloqueo de historial si intentan forzar la entrada sin sesión
 if(!vendedor || !sucursal){
     window.location.replace("perfil.html");
 } else {
@@ -459,6 +459,11 @@ if(!vendedor || !sucursal){
 // GUARDAR REGISTRO
 document.getElementById("registroForm").addEventListener("submit", function(e){
     e.preventDefault();
+
+    // 1. OBTENEMOS EL BOTÓN Y ACTIVAMOS EL MODO CARGANDO
+    let boton = document.getElementById("btnGuardar");
+    boton.classList.add("is-loading"); // Añade la animación de Bulma
+    boton.disabled = true;             // Evita que hagan doble clic
 
     let datos = {
         vendedor: vendedor,
@@ -481,6 +486,11 @@ document.getElementById("registroForm").addEventListener("submit", function(e){
     .catch(err => {
         console.error("Error al enviar:", err);
         alert("Hubo un problema al conectar con el servidor.");
+    })
+    .finally(() => {
+        // 2. CUANDO TERMINE (BIEN O MAL), QUITAMOS EL CARGANDO Y REACTIVAMOS EL BOTÓN
+        boton.classList.remove("is-loading");
+        boton.disabled = false;
     });
 });
 
@@ -495,7 +505,6 @@ function cambiarUsuario(){
         let confirmar = confirm("¿Desea cerrar sesión y cambiar de usuario?");
         if(confirmar){
             localStorage.clear();
-            // Cambiado a .replace() para que al salir legalmente, no puedan volver con el botón "Adelante"
             window.location.replace("perfil.html");
         }
     } else {
