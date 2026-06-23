@@ -454,7 +454,7 @@ object-fit:cover;
 let vendedor = localStorage.getItem("vendedor");
 let sucursal = localStorage.getItem("sucursal");
 
-// CONSTANTE DE CONTRASEÑA MAGICA
+// CONTRASEÑA AUTORIZADA
 const CLAVE_MAESTRA = "SAM2026";
 
 // VALIDAR QUE EXISTA PERFIL
@@ -462,32 +462,10 @@ if(!vendedor || !sucursal){
     window.location.href="perfil.html";
 }
 
-// MOSTRAR DATOS
+// MOSTRAR DATOS EN PANTALLA
 document.getElementById("mostrarVendedor").innerHTML = vendedor;
 document.getElementById("mostrarSucursal").innerHTML = sucursal;
 
-// BLOQUEAR AL ENTRAR SI YA REGISTRÓ HOY
-window.addEventListener("pageshow", function(){
-    let hoy = new Date().toLocaleDateString();
-    let fecha = localStorage.getItem("fechaRegistro");
-    let tiene = localStorage.getItem("tieneRegistros");
-
-    if(fecha == hoy && tiene == "SI"){
-        // Ya no deshabilitamos el textarea automáticamente para permitir que ingresen la clave al intentar guardar
-        console.log("Usuario ya registró hoy, pero puede desbloquear con clave.");
-    }
-});
-
-// FUNCIÓN PARA VALIDAR CONTRASEÑA
-function validarPermisoEspecial() {
-    let intento = prompt("Este usuario ya realizó registros hoy. Ingrese la contraseña de autorización para continuar:");
-    if (intento === CLAVE_MAESTRA) {
-        return true;
-    } else if (intento !== null) {
-        alert("Contraseña incorrecta. Acción cancelada.");
-    }
-    return false;
-}
 
 // GUARDAR REGISTRO
 document.getElementById("registroForm").addEventListener("submit", function(e){
@@ -497,21 +475,32 @@ document.getElementById("registroForm").addEventListener("submit", function(e){
     let fecha = localStorage.getItem("fechaRegistro");
     let tiene = localStorage.getItem("tieneRegistros");
 
-    // Si ya registró hoy, pedimos la contraseña
-    if(fecha == hoy && tiene == "SI"){
-        if(!validarPermisoEspecial()) {
-            return; // Detiene el envío si la clave es incorrecta o cancelan
+    // VALIDACIÓN: Si ya registró HOY, se solicita obligatoriamente la contraseña
+    if(fecha === hoy && tiene === "SI"){
+        let intento = prompt("Ya has realizado un registro hoy. Para ingresar un registro adicional, introduce la contraseña de autorización:");
+        
+        // Si cancela o deja vacío
+        if (intento === null) {
+            return; 
+        }
+        
+        // Si la contraseña es incorrecta
+        if (intento !== CLAVE_MAESTRA) {
+            alert("Contraseña incorrecta. No tienes permisos para duplicar registros hoy.");
+            return;
         }
     }
 
+    // Si pasa la validación (o si es su primer registro del día), preparamos los datos
     let datos = {
         vendedor: vendedor,
         sucursal: sucursal,
         respuesta: document.getElementById("respuesta").value
     };
 
-    console.log(datos);
+    console.log("Enviando datos...", datos);
 
+    // Enviar a Google Apps Script
     fetch(
         "https://script.google.com/macros/s/AKfycbwJGF6YvAQi_YrNS90aJyH7QTCfkqJcrtjMpzrXqLGqM6_0HPdGI-pCeSs65zuEmD6Aug/exec",
         {
@@ -521,13 +510,19 @@ document.getElementById("registroForm").addEventListener("submit", function(e){
         }
     )
     .then(() => {
+        // Guardamos en el almacenamiento que ya tiene al menos un registro hoy
         localStorage.setItem("fechaRegistro", hoy);
         localStorage.setItem("tieneRegistros", "SI");
 
-        alert("Registro guardado correctamente");
+        alert("Registro guardado correctamente.");
         document.getElementById("registroForm").reset();
+    })
+    .catch(err => {
+        console.error("Error al enviar:", err);
+        alert("Hubo un problema al conectar con el servidor.");
     });
 });
+
 
 // CAMBIAR USUARIO
 function cambiarUsuario(){
@@ -535,15 +530,19 @@ function cambiarUsuario(){
     let fecha = localStorage.getItem("fechaRegistro");
     let tiene = localStorage.getItem("tieneRegistros");
 
-    // Si ya registró hoy, pide contraseña para poder cambiar de usuario
-    if(fecha == hoy && tiene == "SI"){
-        if(!validarPermisoEspecial()) {
-            return; // Detiene la acción si la clave es incorrecta
+    // Si ya registró hoy, requiere contraseña para poder cambiar de usuario
+    if(fecha === hoy && tiene === "SI"){
+        let intento = prompt("Para cambiar de usuario habiendo registrado hoy, introduce la contraseña:");
+        if (intento === null) return;
+        
+        if (intento !== CLAVE_MAESTRA) {
+            alert("Contraseña incorrecta.");
+            return;
         }
     }
 
-    let confirmar = confirm("¿Desea cambiar de usuario?");
-
+    // Confirmación estándar si no hay registros o si puso la clave bien
+    let confirmar = confirm("¿Desea cerrar sesión y cambiar de usuario?");
     if(confirmar){
         localStorage.clear();
         window.location.href = "perfil.html";
