@@ -494,7 +494,7 @@ object-fit:cover;
 
 
 <script>
-// 1. EL GUARDIÁN: Si ya hay sesión iniciada, rebota de inmediato a registro.html
+// EL GUARDIÁN: Si ya hay sesión, expulsa de inmediato a registro.html
 (function() {
     let vendedorActivo = localStorage.getItem("vendedor");
     let sucursalActiva = localStorage.getItem("sucursal");
@@ -504,7 +504,7 @@ object-fit:cover;
     }
 })();
 
-// 2. GUARDAR DATOS AL INICIAR SESIÓN
+// GUARDAR DATOS AL INICIAR SESIÓN
 document
 .getElementById("perfilForm")
 .addEventListener("submit",function(e){
@@ -514,7 +514,6 @@ document
     let vendedor = document.getElementById("vendedor").value;
     let sucursal = document.getElementById("sucursal").value;
 
-    // Validación por si no eligen sucursal
     if(sucursal === "") {
         alert("Por favor, seleccione una sucursal.");
         return;
@@ -523,7 +522,7 @@ document
     localStorage.setItem("vendedor", vendedor);
     localStorage.setItem("sucursal", sucursal);
 
-    // USAMOS replace para borrar el "perfil.html" del historial del navegador
+    // Borra perfil.html del historial al avanzar
     window.location.replace("registro.html"); 
 
 });
