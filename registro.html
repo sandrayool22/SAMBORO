@@ -380,7 +380,21 @@ Guardar registro
 
 </button>
 
+<br>
 
+<button
+
+type="button"
+
+onclick="cambiarUsuario()"
+
+class="button is-light is-fullwidth">
+
+
+Cambiar usuario
+
+
+</button>
 
 
 
@@ -567,7 +581,16 @@ document
 };
 
 
+localStorage.setItem(
+"fechaRegistro",
+new Date().toLocaleDateString()
+);
 
+
+localStorage.setItem(
+"tieneRegistros",
+"SI"
+);
 
 
 
