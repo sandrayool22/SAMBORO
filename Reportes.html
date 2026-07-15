@@ -6,8 +6,6 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <title>Dashboard Samboro</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@1.0.2/css/bulma.min.css">
-    <!-- Iconos de FontAwesome para los calendarios -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
     <style>
         body {
@@ -38,47 +36,89 @@
             border-radius: 18px;
             min-height: 380px;
         }
-        /* Crucial: Hace que el icono no bloquee el clic y despliegue el calendario */
-        .control.has-icons-left .icon {
-            color: #b51d2a;
-            pointer-events: none; 
-        }
-        /* Estilo de cursor pointer para indicar interactividad sobre el input completo */
         .input[type="date"] {
             cursor: pointer;
+        }
+        /* Estilo para el botón de la flecha del calendario */
+        .btn-calendario {
+            background-color: #fff;
+            border-color: #dbdbdb;
+            color: #b51d2a;
+            cursor: pointer;
+        }
+        .btn-calendario:hover {
+            background-color: #f5f5f5;
+        }
+        /* Pantalla de carga (Loading Overlay) */
+        #loadingOverlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(244, 239, 231, 0.9);
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+        .spinner {
+            border: 6px solid #f3f3f3;
+            border-top: 6px solid #b51d2a;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin-bottom: 15px;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
         }
     </style>
 </head>
 <body>
 
+<div id="loadingOverlay">
+    <div class="spinner"></div>
+    <h2 class="title is-4 has-text-centered" style="color: #b51d2a;">Por favor espera, cargando la data de Google Sheets...</h2>
+</div>
+
 <section class="section">
     <div class="container">
-        <!-- Encabezado -->
         <div class="mb-6">
             <div class="hero-samboro">SAMBORO</div>
             <h1 class="title is-1">Business <span style="color:#b51d2a;">Intelligence</span></h1>
             <p class="subtitulo">Análisis de tráfico y necesidades comerciales</p>
         </div>
 
-        <!-- Filtros con Iconos de Calendario Operativos -->
         <div class="box card-dashboard">
             <div class="columns">
                 <div class="column">
                     <label class="label">Fecha Inicio</label>
-                    <div class="control has-icons-left">
-                        <input class="input" type="date" id="filtroFechaInicio">
-                        <span class="icon is-left">
-                            <i class="fa-solid fa-calendar-days"></i>
-                        </span>
+                    <div class="field has-addons">
+                        <div class="control is-expanded">
+                            <input class="input" type="date" id="filtroFechaInicio">
+                        </div>
+                        <div class="control">
+                            <button class="button btn-calendario" onclick="abrirCalendario('filtroFechaInicio')" title="Seleccionar fecha">
+                                <span>▼</span>
+                            </button>
+                        </div>
                     </div>
                 </div>
                 <div class="column">
                     <label class="label">Fecha Fin</label>
-                    <div class="control has-icons-left">
-                        <input class="input" type="date" id="filtroFechaFin">
-                        <span class="icon is-left">
-                            <i class="fa-solid fa-calendar-days"></i>
-                        </span>
+                    <div class="field has-addons">
+                        <div class="control is-expanded">
+                            <input class="input" type="date" id="filtroFechaFin">
+                        </div>
+                        <div class="control">
+                            <button class="button btn-calendario" onclick="abrirCalendario('filtroFechaFin')" title="Seleccionar fecha">
+                                <span>▼</span>
+                            </button>
+                        </div>
                     </div>
                 </div>
                 <div class="column">
@@ -106,7 +146,6 @@
             </div>
         </div>
 
-        <!-- KPIs -->
         <div class="columns">
             <div class="column">
                 <div class="box card-dashboard kpi">
@@ -134,7 +173,6 @@
             </div>
         </div>
 
-        <!-- Gráficos Comparativos Dinámicos -->
         <div class="columns">
             <div class="column">
                 <div class="box panel">
@@ -146,7 +184,6 @@
             </div>
         </div>
 
-        <!-- Tabla Informativa -->
         <div class="columns">
             <div class="column">
                 <div class="box panel">
@@ -207,6 +244,18 @@
         { key: "VITERRA", label: "Viterra" }
     ];
 
+    // Función que fuerza el despliegue del calendario al presionar la flecha
+    function abrirCalendario(inputId) {
+        const input = document.getElementById(inputId);
+        if (input) {
+            if (typeof input.showPicker === 'function') {
+                input.showPicker(); // Método moderno y estándar
+            } else {
+                input.click(); // Retrocompatibilidad
+            }
+        }
+    }
+
     function extraerFechaLimpia(campoFecha) {
         if (!campoFecha) return '';
         const texto = campoFecha.toString().trim();
@@ -222,9 +271,12 @@
             
             poblarFiltros();
             inicializarDashboard();
+            
+            // Ocultar el diálogo de carga una vez finalizado todo el procesamiento
+            document.getElementById('loadingOverlay').style.display = 'none';
         } catch (error) {
             console.error("Error cargando base de datos:", error);
-            document.getElementById('tablaRegistros').innerHTML = `<tr><td colspan="4" class="has-text-danger has-text-centered">Error de conexión. Verifica la implementación de tu Apps Script.</td></tr>`;
+            document.getElementById('loadingOverlay').innerHTML = `<h2 class="title is-4 has-text-danger">Error de conexión. Verifica la implementación de tu Apps Script.</h2>`;
         }
     }
 
@@ -253,7 +305,6 @@
             selectVendedor.appendChild(opt);
         });
 
-        // Colocar fecha de hoy por defecto
         const hoyStr = new Date().toISOString().split('T')[0];
         document.getElementById('filtroFechaInicio').value = hoyStr;
         document.getElementById('filtroFechaFin').value = hoyStr;
