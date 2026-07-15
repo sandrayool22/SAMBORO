@@ -51,8 +51,12 @@
         <div class="box card-dashboard">
             <div class="columns">
                 <div class="column">
-                    <label class="label">Fecha</label>
-                    <input class="input" type="date" id="filtroFecha">
+                    <label class="label">Fecha Inicio</label>
+                    <input class="input" type="date" id="filtroFechaInicio">
+                </div>
+                <div class="column">
+                    <label class="label">Fecha Fin</label>
+                    <input class="input" type="date" id="filtroFechaFin">
                 </div>
                 <div class="column">
                     <label class="label">Sucursal</label>
@@ -109,8 +113,8 @@
         <div class="columns">
             <div class="column">
                 <div class="box panel">
-                    <h3 class="title is-5">Tráfico de Clientes</h3>
-                    <div style="height: 300px; position: relative;">
+                    <h3 class="title is-5">Comparativo: Tráfico de Clientes vs Respuestas</h3>
+                    <div style="height: 350px; position: relative;">
                         <canvas id="graficaTrafico"></canvas>
                     </div>
                 </div>
@@ -152,7 +156,7 @@
     let datosDashboard = null;
     let graficoTraficoInstancia = null;
 
-    // Diccionario para normalizar los nombres de las sucursales con las columnas de tráfico
+    // Diccionario para vincular nombres de sucursales con las columnas de tráfico
     const mapaColumnasTrafico = {
         "ZONA 7": "ZONA 7",
         "ZONA 11": "ZONA 11",
@@ -163,7 +167,7 @@
         "VILLA NUEVA": "VILLA NUEVA",
         "DECOCITY": "DECOCITY",
         "VITERRA": "VITERRA",
-        "CENTRO LOGISTICO": "VILLA NUEVA" // Mapeo si aplica usar los datos de Villa Nueva o similares
+        "CENTRO LOGISTICO": "VILLA NUEVA"
     };
 
     const columnasPorDefecto = ["ZONA 7", "ZONA 11", "ZONA 9", "ZONA 17", "ZONA 7 OUTLET", "SAN CRISTOBAL", "VILLA NUEVA", "DECOCITY", "VITERRA"];
@@ -177,7 +181,7 @@
             inicializarDashboard();
         } catch (error) {
             console.error("Error cargando base de datos:", error);
-            document.getElementById('tablaRegistros').innerHTML = `<tr><td colspan="4" class="has-text-danger has-text-centered">Error al consultar los datos de Apps Script. Revisa los permisos de la implementación.</td></tr>`;
+            document.getElementById('tablaRegistros').innerHTML = `<tr><td colspan="4" class="has-text-danger has-text-centered">Error al consultar los datos. Revisa la configuración de tu Apps Script.</td></tr>`;
         }
     }
 
@@ -213,15 +217,25 @@
     }
 
     function procesarYMostrarDatos() {
-        const fechaFiltro = document.getElementById('filtroFecha').value;
+        const fInicio = document.getElementById('filtroFechaInicio').value;
+        const fFin = document.getElementById('filtroFechaFin').value;
         const sucursalFiltro = document.getElementById('filtroSucursal').value;
         const vendedorFiltro = document.getElementById('filtroVendedor').value;
 
-        // 1. Filtrar registros de la hoja "Registro_No_Compra"
+        // 1. FILTRAR REGISTROS (Hoja: Registro_No_Compra)
         let registrosFiltrados = datosDashboard.registros;
 
-        if (fechaFiltro) {
-            registrosFiltrados = registrosFiltrados.filter(reg => reg["Fecha 2"] === fechaFiltro || (reg.Fecha && reg.Fecha.startsWith(fechaFiltro)));
+        if (fInicio) {
+            registrosFiltrados = registrosFiltrados.filter(reg => {
+                const fStr = reg["Fecha 2"] || (reg.Fecha ? reg.Fecha.split(' ')[0] : '');
+                return fStr >= fInicio;
+            });
+        }
+        if (fFin) {
+            registrosFiltrados = registrosFiltrados.filter(reg => {
+                const fStr = reg["Fecha 2"] || (reg.Fecha ? reg.Fecha.split(' ')[0] : '');
+                return fStr <= fFin;
+            });
         }
         if (sucursalFiltro !== 'Todas') {
             registrosFiltrados = registrosFiltrados.filter(reg => reg.Sucursal && reg.Sucursal.trim().toUpperCase() === sucursalFiltro.toUpperCase());
@@ -233,14 +247,16 @@
         const totalRespuestas = registrosFiltrados.length;
         document.getElementById('kpiClientes').textContent = totalRespuestas;
 
-        // 2. Calcular Tráfico de la hoja "TRAFICO DE CLIENTES"
+        // 2. FILTRAR TRÁFICO (Hoja: TRAFICO DE CLIENTES)
         let traficoFiltrado = datosDashboard.trafico;
-        if (fechaFiltro) {
-            traficoFiltrado = traficoFiltrado.filter(t => t.FECHA && t.FECHA.startsWith(fechaFiltro));
+        if (fInicio) {
+            traficoFiltrado = traficoFiltrado.filter(t => t.FECHA && t.FECHA.split('T')[0] >= fInicio);
+        }
+        if (fFin) {
+            traficoFiltrado = traficoFiltrado.filter(t => t.FECHA && t.FECHA.split('T')[0] <= fFin);
         }
 
         let sumatoriaTrafico = 0;
-
         traficoFiltrado.forEach(dia => {
             if (sucursalFiltro !== 'Todas') {
                 const colCorrespondiente = mapaColumnasTrafico[sucursalFiltro.toUpperCase()];
@@ -260,14 +276,14 @@
 
         document.getElementById('kpiTrafico').textContent = sumatoriaTrafico;
 
-        // 3. Captura % (Respuestas / Tráfico Total)
+        // 3. KPI CAPTURA
         let tasaCaptura = 0;
         if (sumatoriaTrafico > 0) {
             tasaCaptura = Math.round((totalRespuestas / sumatoriaTrafico) * 100);
         }
         document.getElementById('kpiCaptura').textContent = tasaCaptura + "%";
 
-        // 4. Calcular Sucursal Líder
+        // 4. KPI SUCURSAL LÍDER
         const conteoSucursales = {};
         registrosFiltrados.forEach(r => {
             if (r.Sucursal) {
@@ -286,14 +302,13 @@
         }
         document.getElementById('kpiLider').textContent = sucursalLider;
 
-        // 5. Poblar la Tabla Informativa
+        // 5. POBLAR TABLA INFORMATIVA
         const tablaCuerpo = document.getElementById('tablaRegistros');
         tablaCuerpo.innerHTML = '';
 
         if (registrosFiltrados.length === 0) {
-            tablaCuerpo.innerHTML = `<tr><td colspan="4" class="has-text-centered">No se encontraron interacciones para los filtros seleccionados.</td></tr>`;
+            tablaCuerpo.innerHTML = `<tr><td colspan="4" class="has-text-centered">No se encontraron interacciones para el rango de fechas.</td></tr>`;
         } else {
-            // Mostrar últimos 15 de forma descendente
             registrosFiltrados.slice(-15).reverse().forEach(reg => {
                 const fila = document.createElement('tr');
                 fila.innerHTML = `
@@ -306,10 +321,19 @@
             });
         }
 
-        // 6. Graficar Tráfico Histórico (Últimos 8 días registrados)
-        const ultimosRegistrosTrafico = datosDashboard.trafico.slice(-8);
-        const labelsGrafico = ultimosRegistrosTrafico.map(d => d.FECHA ? d.FECHA.split('T')[0] : '');
-        const datosGrafico = ultimosRegistrosTrafico.map(dia => {
+        // 6. GENERACIÓN DEL COMPARATIVO HISTÓRICO DIARIO PARA LA GRÁFICA
+        // Mapeamos los días disponibles de la hoja tráfico en el rango seleccionado
+        const ultimosDias = datosDashboard.trafico.filter(t => {
+            const fStr = t.FECHA ? t.FECHA.split('T')[0] : '';
+            const checkInicio = fInicio ? fStr >= fInicio : true;
+            const checkFin = fFin ? fStr <= fFin : true;
+            return checkInicio && checkFin;
+        }).slice(-12); // Limitamos a los últimos 12 días del rango para que se visualice bien
+
+        const labelsGrafico = ultimosDias.map(d => d.FECHA ? d.FECHA.split('T')[0] : '');
+        
+        // Datos Línea 1: Tráfico
+        const datosTraficoLinea = ultimosDias.map(dia => {
             let totalDia = 0;
             if (sucursalFiltro !== 'Todas') {
                 const colCorrespondiente = mapaColumnasTrafico[sucursalFiltro.toUpperCase()];
@@ -323,10 +347,21 @@
             return totalDia;
         });
 
-        renderizarGrafico(labelsGrafico, datosGrafico, sucursalFiltro);
+        // Datos Línea 2: Respuestas (Conteo de No compras acumuladas por ese día específico)
+        const datosRespuestasLinea = labelsGrafico.map(fechaDia => {
+            return datosDashboard.registros.filter(reg => {
+                const fReg = reg["Fecha 2"] || (reg.Fecha ? reg.Fecha.split(' ')[0] : '');
+                const matchFecha = (fReg === fechaDia);
+                const matchSuc = (sucursalFiltro === 'Todas' || (reg.Sucursal && reg.Sucursal.trim().toUpperCase() === sucursalFiltro.toUpperCase()));
+                const matchVend = (vendedorFiltro === 'Todos' || (reg.Vendedor && reg.Vendedor.trim() === vendedorFiltro));
+                return matchFecha && matchSuc && matchVend;
+            }).length;
+        });
+
+        renderizarGraficoComparativo(labelsGrafico, datosTraficoLinea, datosRespuestasLinea, sucursalFiltro);
     }
 
-    function renderizarGrafico(labels, datos, sucursal) {
+    function renderizarGraficoComparativo(labels, datosTrafico, datosRespuestas, sucursal) {
         const ctx = document.getElementById('graficaTrafico').getContext('2d');
         if (graficoTraficoInstancia) {
             graficoTraficoInstancia.destroy();
@@ -336,16 +371,28 @@
             type: 'line',
             data: {
                 labels: labels,
-                datasets: [{
-                    label: `Tendencia de Tráfico - ${sucursal}`,
-                    data: datos,
-                    borderColor: '#b51d2a',
-                    backgroundColor: 'rgba(181, 29, 42, 0.08)',
-                    borderWidth: 3,
-                    fill: true,
-                    tension: 0.3,
-                    pointBackgroundColor: '#b51d2a'
-                }]
+                datasets: [
+                    {
+                        label: `Tráfico Total (${sucursal})`,
+                        data: datosTrafico,
+                        borderColor: '#b51d2a',
+                        backgroundColor: 'rgba(181, 29, 42, 0.04)',
+                        borderWidth: 3,
+                        tension: 0.2,
+                        fill: true,
+                        pointBackgroundColor: '#b51d2a'
+                    },
+                    {
+                        label: `Respuestas Obtenidas`,
+                        data: datosRespuestas,
+                        borderColor: '#23d1b6', // Color verde agua para diferenciarlo del tráfico
+                        backgroundColor: 'rgba(35, 209, 182, 0.04)',
+                        borderWidth: 3,
+                        tension: 0.2,
+                        fill: false,
+                        pointBackgroundColor: '#23d1b6'
+                    }
+                ]
             },
             options: {
                 responsive: true,
@@ -354,7 +401,11 @@
                     legend: { display: true, position: 'top' }
                 },
                 scales: {
-                    y: { beginAtZero: true, grid: { color: 'rgba(0,0,0,0.05)' } },
+                    y: { 
+                        beginAtZero: true, 
+                        grid: { color: 'rgba(0,0,0,0.05)' },
+                        title: { display: true, text: 'Cantidad de Personas / Registros' }
+                    },
                     x: { grid: { display: false } }
                 }
             }
