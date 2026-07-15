@@ -6,6 +6,7 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <title>Dashboard Samboro</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@1.0.2/css/bulma.min.css">
+    <!-- Iconos de FontAwesome para los calendarios -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
     <style>
@@ -37,9 +38,14 @@
             border-radius: 18px;
             min-height: 380px;
         }
-        /* Ajuste estético para iconos dentro de Bulma */
+        /* Crucial: Hace que el icono no bloquee el clic y despliegue el calendario */
         .control.has-icons-left .icon {
             color: #b51d2a;
+            pointer-events: none; 
+        }
+        /* Estilo de cursor pointer para indicar interactividad sobre el input completo */
+        .input[type="date"] {
+            cursor: pointer;
         }
     </style>
 </head>
@@ -47,12 +53,14 @@
 
 <section class="section">
     <div class="container">
+        <!-- Encabezado -->
         <div class="mb-6">
             <div class="hero-samboro">SAMBORO</div>
             <h1 class="title is-1">Business <span style="color:#b51d2a;">Intelligence</span></h1>
             <p class="subtitulo">Análisis de tráfico y necesidades comerciales</p>
         </div>
 
+        <!-- Filtros con Iconos de Calendario Operativos -->
         <div class="box card-dashboard">
             <div class="columns">
                 <div class="column">
@@ -98,6 +106,7 @@
             </div>
         </div>
 
+        <!-- KPIs -->
         <div class="columns">
             <div class="column">
                 <div class="box card-dashboard kpi">
@@ -125,10 +134,11 @@
             </div>
         </div>
 
+        <!-- Gráficos Comparativos Dinámicos -->
         <div class="columns">
             <div class="column">
                 <div class="box panel">
-                    <h3 class="title is-5" id="tituloGrafica">Comparativo de Tiendas</h3>
+                    <h3 class="title is-5" id="tituloGrafica">Comparativa de Tiendas</h3>
                     <div style="height: 380px; position: relative;">
                         <canvas id="graficaTrafico"></canvas>
                     </div>
@@ -136,6 +146,7 @@
             </div>
         </div>
 
+        <!-- Tabla Informativa -->
         <div class="columns">
             <div class="column">
                 <div class="box panel">
@@ -170,7 +181,6 @@
     let datosDashboard = null;
     let graficoTraficoInstancia = null;
 
-    // Diccionario de equivalencias para mapear el campo "Sucursal" con las columnas de tráfico
     const mapaColumnasTrafico = {
         "ZONA 7": "ZONA 7",
         "ZONA 11": "ZONA 11",
@@ -260,7 +270,7 @@
         const sucursalFiltro = document.getElementById('filtroSucursal').value;
         const vendedorFiltro = document.getElementById('filtroVendedor').value;
 
-        // 1. FILTRAR RESPUESTAS (Ventas perdidas acumuladas)
+        // 1. FILTRAR RESPUESTAS
         let registrosFiltrados = datosDashboard.registros;
 
         if (fInicio) {
@@ -359,14 +369,12 @@
             });
         }
 
-        // 6. RENDERIZACIÓN INTELIGENTE DE GRÁFICAS
+        // 6. RENDERIZACIÓN DE GRÁFICAS
         if (sucursalFiltro === "Todas") {
-            // MODO COMPARATIVO TIENDA POR TIENDA (Gráfico de Barras Agrupadas)
             document.getElementById('tituloGrafica').textContent = "Comparativa entre Sucursales: Tráfico de Clientes vs Respuestas";
             
             const labelsTiendas = sucursalesOperativas.map(s => s.label);
             
-            // Tráfico acumulado de todo el periodo seleccionado por tienda
             const datosTraficoTiendas = sucursalesOperativas.map(suc => {
                 let totalSuc = 0;
                 traficoFiltrado.forEach(dia => {
@@ -376,13 +384,11 @@
                 return totalSuc;
             });
 
-            // Respuestas acumuladas de todo el periodo seleccionado por tienda
             const datosRespuestasTiendas = sucursalesOperativas.map(suc => {
                 return datosDashboard.registros.filter(reg => {
                     const fReg = reg["Fecha 2"] || extraerFechaLimpia(reg.Fecha);
                     const matchFecha = (!fInicio || fReg >= fInicio) && (!fFin || fReg <= fFin);
                     
-                    // El mapeo de sucursal debe coincidir de forma flexible
                     let matchSuc = false;
                     if (reg.Sucursal) {
                         const sucFormateada = reg.Sucursal.trim().toUpperCase();
@@ -397,7 +403,6 @@
             renderizarGraficoBarras(labelsTiendas, datosTraficoTiendas, datosRespuestasTiendas);
 
         } else {
-            // MODO TENDENCIA DIARIA DE LA TIENDA SELECCIONADA (Gráfico de Líneas)
             document.getElementById('tituloGrafica').textContent = `Tendencia Diaria de Clientes e Interacciones - ${sucursalFiltro}`;
             
             const setFechasUnicas = new Set();
@@ -434,7 +439,6 @@
         }
     }
 
-    // Renderizado del Gráfico de Barras Agrupadas para "Todas las Tiendas"
     function renderizarGraficoBarras(labels, datosTrafico, datosRespuestas) {
         const ctx = document.getElementById('graficaTrafico').getContext('2d');
         if (graficoTraficoInstancia) {
@@ -482,7 +486,6 @@
         });
     }
 
-    // Renderizado del Gráfico de Líneas para Tendencias Individuales
     function renderizarGraficoLineas(labels, datosTrafico, datosRespuestas, sucursal) {
         const ctx = document.getElementById('graficaTrafico').getContext('2d');
         if (graficoTraficoInstancia) {
