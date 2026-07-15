@@ -6,6 +6,7 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <title>Dashboard Samboro</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@1.0.2/css/bulma.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
     <style>
         body {
@@ -36,6 +37,10 @@
             border-radius: 18px;
             min-height: 380px;
         }
+        /* Ajuste estético para iconos dentro de Bulma */
+        .control.has-icons-left .icon {
+            color: #b51d2a;
+        }
     </style>
 </head>
 <body>
@@ -51,18 +56,28 @@
         <div class="box card-dashboard">
             <div class="columns">
                 <div class="column">
-                    <label class="label">Fecha Inicio (Calendario)</label>
-                    <input class="input" type="date" id="filtroFechaInicio">
+                    <label class="label">Fecha Inicio</label>
+                    <div class="control has-icons-left">
+                        <input class="input" type="date" id="filtroFechaInicio">
+                        <span class="icon is-left">
+                            <i class="fa-solid fa-calendar-days"></i>
+                        </span>
+                    </div>
                 </div>
                 <div class="column">
-                    <label class="label">Fecha Fin (Calendario)</label>
-                    <input class="input" type="date" id="filtroFechaFin">
+                    <label class="label">Fecha Fin</label>
+                    <div class="control has-icons-left">
+                        <input class="input" type="date" id="filtroFechaFin">
+                        <span class="icon is-left">
+                            <i class="fa-solid fa-calendar-days"></i>
+                        </span>
+                    </div>
                 </div>
                 <div class="column">
                     <label class="label">Sucursal</label>
                     <div class="select is-fullwidth">
                         <select id="filtroSucursal">
-                            <option value="Todas">Todas</option>
+                            <option value="Todas">Todas las Tiendas</option>
                         </select>
                     </div>
                 </div>
@@ -113,8 +128,8 @@
         <div class="columns">
             <div class="column">
                 <div class="box panel">
-                    <h3 class="title is-5">Comparativo: Tráfico de Clientes vs Respuestas</h3>
-                    <div style="height: 350px; position: relative;">
+                    <h3 class="title is-5" id="tituloGrafica">Comparativo de Tiendas</h3>
+                    <div style="height: 380px; position: relative;">
                         <canvas id="graficaTrafico"></canvas>
                     </div>
                 </div>
@@ -155,7 +170,7 @@
     let datosDashboard = null;
     let graficoTraficoInstancia = null;
 
-    // Diccionario estricto para mapear el campo "Sucursal" con las columnas de la hoja "TRAFICO DE CLIENTES"
+    // Diccionario de equivalencias para mapear el campo "Sucursal" con las columnas de tráfico
     const mapaColumnasTrafico = {
         "ZONA 7": "ZONA 7",
         "ZONA 11": "ZONA 11",
@@ -170,9 +185,18 @@
         "CENTRO LOGISTICO": "VILLA NUEVA"
     };
 
-    const columnasPorDefecto = ["ZONA 7", "ZONA 11", "ZONA 9", "ZONA 17", "ZONA 7 OUTLET", "SAN CRISTOBAL", "VILLA NUEVA", "DECOCITY", "VITERRA"];
+    const sucursalesOperativas = [
+        { key: "ZONA 7", label: "Zona 7" },
+        { key: "ZONA 11", label: "Zona 11" },
+        { key: "ZONA 9", label: "Zona 9" },
+        { key: "ZONA 17", label: "Zona 17" },
+        { key: "ZONA 7 OUTLET", label: "Zona 7 Outlet" },
+        { key: "SAN CRISTOBAL", label: "San Cristóbal" },
+        { key: "VILLA NUEVA", label: "Villa Nueva" },
+        { key: "DECOCITY", label: "Decocity" },
+        { key: "VITERRA", label: "Viterra" }
+    ];
 
-    // Función auxiliar para extraer el formato YYYY-MM-DD de forma segura
     function extraerFechaLimpia(campoFecha) {
         if (!campoFecha) return '';
         const texto = campoFecha.toString().trim();
@@ -190,7 +214,7 @@
             inicializarDashboard();
         } catch (error) {
             console.error("Error cargando base de datos:", error);
-            document.getElementById('tablaRegistros').innerHTML = `<tr><td colspan="4" class="has-text-danger has-text-centered">Error al consultar los datos. Revisa la configuración de tu Apps Script.</td></tr>`;
+            document.getElementById('tablaRegistros').innerHTML = `<tr><td colspan="4" class="has-text-danger has-text-centered">Error de conexión. Verifica la implementación de tu Apps Script.</td></tr>`;
         }
     }
 
@@ -219,7 +243,7 @@
             selectVendedor.appendChild(opt);
         });
 
-        // Poner por defecto la fecha de hoy en el calendario para comodidad del usuario
+        // Colocar fecha de hoy por defecto
         const hoyStr = new Date().toISOString().split('T')[0];
         document.getElementById('filtroFechaInicio').value = hoyStr;
         document.getElementById('filtroFechaFin').value = hoyStr;
@@ -236,7 +260,7 @@
         const sucursalFiltro = document.getElementById('filtroSucursal').value;
         const vendedorFiltro = document.getElementById('filtroVendedor').value;
 
-        // 1. FILTRAR RESPUESTAS (Siempre se cuentan de forma independiente al tráfico)
+        // 1. FILTRAR RESPUESTAS (Ventas perdidas acumuladas)
         let registrosFiltrados = datosDashboard.registros;
 
         if (fInicio) {
@@ -279,9 +303,9 @@
                     if (!isNaN(valor)) sumatoriaTrafico += valor;
                 }
             } else {
-                columnasPorDefecto.forEach(col => {
-                    if (dia[col]) {
-                        const valor = parseInt(dia[col]);
+                sucursalesOperativas.forEach(suc => {
+                    if (dia[suc.key]) {
+                        const valor = parseInt(dia[suc.key]);
                         if (!isNaN(valor)) sumatoriaTrafico += valor;
                     }
                 });
@@ -335,58 +359,131 @@
             });
         }
 
-        // 6. CONSTRUCCIÓN DE FECHAS PARA EL EJE X DE LA GRÁFICA
-        // Unimos todas las fechas únicas que tengan tráfico o que tengan respuestas para el rango seleccionado
-        const setFechasUnicas = new Set();
-        
-        // Agregar fechas del rango del tráfico
-        traficoFiltrado.forEach(t => {
-            const f = extraerFechaLimpia(t.FECHA);
-            if (f) setFechasUnicas.add(f);
-        });
-        
-        // Agregar fechas del rango de respuestas (Para cubrir el día de hoy si no hay fila de tráfico aún)
-        registrosFiltrados.forEach(reg => {
-            const f = reg["Fecha 2"] || extraerFechaLimpia(reg.Fecha);
-            if (f) setFechasUnicas.add(f);
-        });
-
-        // Ordenar las fechas de forma cronológica (últimos 14 días analizados)
-        const labelsGrafico = Array.from(setFechasUnicas).sort().slice(-14);
-
-        // Mapear los datos de Tráfico día por día
-        const datosTraficoLinea = labelsGrafico.map(fechaDia => {
-            const diaTrafico = datosDashboard.trafico.find(t => extraerFechaLimpia(t.FECHA) === fechaDia);
-            if (!diaTrafico) return 0;
+        // 6. RENDERIZACIÓN INTELIGENTE DE GRÁFICAS
+        if (sucursalFiltro === "Todas") {
+            // MODO COMPARATIVO TIENDA POR TIENDA (Gráfico de Barras Agrupadas)
+            document.getElementById('tituloGrafica').textContent = "Comparativa entre Sucursales: Tráfico de Clientes vs Respuestas";
             
-            let totalDia = 0;
-            if (sucursalFiltro !== 'Todas') {
-                const colCorrespondiente = mapaColumnasTrafico[sucursalFiltro.toUpperCase()];
-                totalDia = (colCorrespondiente && parseInt(diaTrafico[colCorrespondiente])) || 0;
-            } else {
-                columnasPorDefecto.forEach(col => {
-                    const val = parseInt(diaTrafico[col]);
-                    if (!isNaN(val)) totalDia += val;
+            const labelsTiendas = sucursalesOperativas.map(s => s.label);
+            
+            // Tráfico acumulado de todo el periodo seleccionado por tienda
+            const datosTraficoTiendas = sucursalesOperativas.map(suc => {
+                let totalSuc = 0;
+                traficoFiltrado.forEach(dia => {
+                    const val = parseInt(dia[suc.key]);
+                    if (!isNaN(val)) totalSuc += val;
                 });
-            }
-            return totalDia;
-        });
+                return totalSuc;
+            });
 
-        // Mapear los datos de Respuestas día por día (conteo preciso)
-        const datosRespuestasLinea = labelsGrafico.map(fechaDia => {
-            return datosDashboard.registros.filter(reg => {
-                const fReg = reg["Fecha 2"] || extraerFechaLimpia(reg.Fecha);
-                const matchFecha = (fReg === fechaDia);
-                const matchSuc = (sucursalFiltro === 'Todas' || (reg.Sucursal && reg.Sucursal.trim().toUpperCase() === sucursalFiltro.toUpperCase()));
-                const matchVend = (vendedorFiltro === 'Todos' || (reg.Vendedor && reg.Vendedor.trim() === vendedorFiltro));
-                return matchFecha && matchSuc && matchVend;
-            }).length;
-        });
+            // Respuestas acumuladas de todo el periodo seleccionado por tienda
+            const datosRespuestasTiendas = sucursalesOperativas.map(suc => {
+                return datosDashboard.registros.filter(reg => {
+                    const fReg = reg["Fecha 2"] || extraerFechaLimpia(reg.Fecha);
+                    const matchFecha = (!fInicio || fReg >= fInicio) && (!fFin || fReg <= fFin);
+                    
+                    // El mapeo de sucursal debe coincidir de forma flexible
+                    let matchSuc = false;
+                    if (reg.Sucursal) {
+                        const sucFormateada = reg.Sucursal.trim().toUpperCase();
+                        matchSuc = (sucFormateada === suc.key || mapaColumnasTrafico[sucFormateada] === suc.key);
+                    }
+                    
+                    const matchVend = (vendedorFiltro === 'Todos' || (reg.Vendedor && reg.Vendedor.trim() === vendedorFiltro));
+                    return matchFecha && matchSuc && matchVend;
+                }).length;
+            });
 
-        renderizarGraficoComparativo(labelsGrafico, datosTraficoLinea, datosRespuestasLinea, sucursalFiltro);
+            renderizarGraficoBarras(labelsTiendas, datosTraficoTiendas, datosRespuestasTiendas);
+
+        } else {
+            // MODO TENDENCIA DIARIA DE LA TIENDA SELECCIONADA (Gráfico de Líneas)
+            document.getElementById('tituloGrafica').textContent = `Tendencia Diaria de Clientes e Interacciones - ${sucursalFiltro}`;
+            
+            const setFechasUnicas = new Set();
+            traficoFiltrado.forEach(t => {
+                const f = extraerFechaLimpia(t.FECHA);
+                if (f) setFechasUnicas.add(f);
+            });
+            registrosFiltrados.forEach(reg => {
+                const f = reg["Fecha 2"] || extraerFechaLimpia(reg.Fecha);
+                if (f) setFechasUnicas.add(f);
+            });
+
+            const labelsGrafico = Array.from(setFechasUnicas).sort().slice(-14);
+
+            const datosTraficoLinea = labelsGrafico.map(fechaDia => {
+                const diaTrafico = datosDashboard.trafico.find(t => extraerFechaLimpia(t.FECHA) === fechaDia);
+                if (!diaTrafico) return 0;
+                
+                const colCorrespondiente = mapaColumnasTrafico[sucursalFiltro.toUpperCase()];
+                return (colCorrespondiente && parseInt(diaTrafico[colCorrespondiente])) || 0;
+            });
+
+            const datosRespuestasLinea = labelsGrafico.map(fechaDia => {
+                return datosDashboard.registros.filter(reg => {
+                    const fReg = reg["Fecha 2"] || extraerFechaLimpia(reg.Fecha);
+                    const matchFecha = (fReg === fechaDia);
+                    const matchSuc = (reg.Sucursal && reg.Sucursal.trim().toUpperCase() === sucursalFiltro.toUpperCase());
+                    const matchVend = (vendedorFiltro === 'Todos' || (reg.Vendedor && reg.Vendedor.trim() === vendedorFiltro));
+                    return matchFecha && matchSuc && matchVend;
+                }).length;
+            });
+
+            renderizarGraficoLineas(labelsGrafico, datosTraficoLinea, datosRespuestasLinea, sucursalFiltro);
+        }
     }
 
-    function renderizarGraficoComparativo(labels, datosTrafico, datosRespuestas, sucursal) {
+    // Renderizado del Gráfico de Barras Agrupadas para "Todas las Tiendas"
+    function renderizarGraficoBarras(labels, datosTrafico, datosRespuestas) {
+        const ctx = document.getElementById('graficaTrafico').getContext('2d');
+        if (graficoTraficoInstancia) {
+            graficoTraficoInstancia.destroy();
+        }
+
+        graficoTraficoInstancia = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: labels,
+                datasets: [
+                    {
+                        label: 'Tráfico Total',
+                        data: datosTrafico,
+                        backgroundColor: '#b51d2a',
+                        borderColor: '#90121d',
+                        borderWidth: 1,
+                        borderRadius: 5
+                    },
+                    {
+                        label: 'Respuestas de No Compra',
+                        data: datosRespuestas,
+                        backgroundColor: '#23d1b6',
+                        borderColor: '#19a18b',
+                        borderWidth: 1,
+                        borderRadius: 5
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: true, position: 'top' }
+                },
+                scales: {
+                    y: { 
+                        beginAtZero: true,
+                        grid: { color: 'rgba(0,0,0,0.05)' },
+                        title: { display: true, text: 'Cantidad de Personas / Registros' }
+                    },
+                    x: { grid: { display: false } }
+                }
+            }
+        });
+    }
+
+    // Renderizado del Gráfico de Líneas para Tendencias Individuales
+    function renderizarGraficoLineas(labels, datosTrafico, datosRespuestas, sucursal) {
         const ctx = document.getElementById('graficaTrafico').getContext('2d');
         if (graficoTraficoInstancia) {
             graficoTraficoInstancia.destroy();
@@ -429,7 +526,7 @@
                     y: { 
                         beginAtZero: true, 
                         grid: { color: 'rgba(0,0,0,0.05)' },
-                        title: { display: true, text: 'Cantidad de Clientes / Interacciones' }
+                        title: { display: true, text: 'Conteo de Visitas / Respuestas' }
                     },
                     x: { grid: { display: false } }
                 }
