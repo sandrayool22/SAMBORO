@@ -216,33 +216,45 @@
     let datosDashboard = null;
     let graficoTraficoInstancia = null;
 
-    // Mapeo ajustado para apuntar de forma estricta a los encabezados de tu columna de Tráfico
-    const mapaColumnasTrafico = {
-        "ZONA 7": "Z7 TRAFICO",
-        "ZONA 11": "Z11 TRAFICO",
-        "ZONA 9": "Z9 TRAFICO",
-        "ZONA 17": "Z17 TRAFICO",
-        "ZONA 7 OUTLET": "Z7O TRAFICO",
-        "SAN CRISTOBAL": "SCB TRAFICO",
-        "SAN CRIS": "SCB TRAFICO",
-        "VILLA NUEVA": "CL TRAFICO",
-        "CENTRO LOGISTICO": "CL TRAFICO",
-        "DECOCITY": "DECOCITY TRAFICO",
-        "VITERRA": "VITERRA TRAFICO"
+    // SISTEMA INTELIGENTE DE SINÓNIMOS A PRUEBA DE ERRORES:
+    // No importa si la columna dice "ZONA 7" o "Z7 TRAFICO", el código probará ambas hasta encontrar la data.
+    const aliasesTrafico = {
+        "ZONA 7": ["ZONA 7", "Z7 TRAFICO"],
+        "ZONA 11": ["ZONA 11", "Z11 TRAFICO"],
+        "ZONA 9": ["ZONA 9", "Z9 TRAFICO"],
+        "ZONA 17": ["ZONA 17", "Z17 TRAFICO"],
+        "ZONA 7 OUTLET": ["ZONA 7 OUTLET", "Z7O TRAFICO", "Z7O"],
+        "SAN CRISTOBAL": ["SAN CRISTOBAL", "SCB TRAFICO", "SAN CRIS", "SCB"],
+        "SAN CRIS": ["SAN CRISTOBAL", "SCB TRAFICO", "SAN CRIS", "SCB"],
+        "VILLA NUEVA": ["VILLA NUEVA", "CL TRAFICO", "CENTRO LOGISTICO", "CL"],
+        "CENTRO LOGISTICO": ["VILLA NUEVA", "CL TRAFICO", "CENTRO LOGISTICO", "CL"],
+        "DECOCITY": ["DECOCITY", "DECOCITY TRAFICO"],
+        "VITERRA": ["VITERRA", "VITERRA TRAFICO"]
     };
 
-    // Estructura operativa ajustada con llaves y concordancia exacta de texto
+    // Estructura maestra de las tiendas operativas para los selectores y gráficas
     const sucursalesOperativas = [
-        { key: "Z7 TRAFICO", label: "Zona 7", matchReg: "ZONA 7" },
-        { key: "Z11 TRAFICO", label: "Zona 11", matchReg: "ZONA 11" },
-        { key: "Z9 TRAFICO", label: "Zona 9", matchReg: "ZONA 9" },
-        { key: "Z17 TRAFICO", label: "Zona 17", matchReg: "ZONA 17" },
-        { key: "Z7O TRAFICO", label: "Zona 7 Outlet", matchReg: "ZONA 7 OUTLET" },
-        { key: "SCB TRAFICO", label: "San Cristóbal", matchReg: "SAN CRISTOBAL" },
-        { key: "CL TRAFICO", label: "Centro Logístico / VN", matchReg: "CENTRO LOGISTICO" },
-        { key: "DECOCITY TRAFICO", label: "Decocity", matchReg: "DECOCITY" },
-        { key: "VITERRA TRAFICO", label: "Viterra", matchReg: "VITERRA" }
+        { id: "ZONA 7", label: "Zona 7", matchReg: ["ZONA 7"] },
+        { id: "ZONA 11", label: "Zona 11", matchReg: ["ZONA 11"] },
+        { id: "ZONA 9", label: "Zona 9", matchReg: ["ZONA 9"] },
+        { id: "ZONA 17", label: "Zona 17", matchReg: ["ZONA 17"] },
+        { id: "ZONA 7 OUTLET", label: "Zona 7 Outlet", matchReg: ["ZONA 7 OUTLET"] },
+        { id: "SAN CRISTOBAL", label: "San Cristóbal", matchReg: ["SAN CRISTOBAL", "SAN CRIS"] },
+        { id: "VILLA NUEVA", label: "Villa Nueva", matchReg: ["VILLA NUEVA", "CENTRO LOGISTICO"] },
+        { id: "DECOCITY", label: "Decocity", matchReg: ["DECOCITY"] },
+        { id: "VITERRA", label: "Viterra", matchReg: ["VITERRA"] }
     ];
+
+    // Función buscadora que rastrea cualquier alias en las columnas
+    function obtenerTraficoDia(dia, sucursal) {
+        const nombresPosibles = aliasesTrafico[sucursal.toUpperCase()] || [sucursal.toUpperCase()];
+        for (let nombre of nombresPosibles) {
+            if (dia[nombre] !== undefined && dia[nombre] !== "") {
+                return parseInt(dia[nombre]) || 0;
+            }
+        }
+        return 0; // Retorna 0 solo si de verdad la columna no existe o está vacía
+    }
 
     function abrirCalendario(inputId) {
         const input = document.getElementById(inputId);
@@ -335,7 +347,9 @@
                 if(!reg.Sucursal) return false;
                 const sReg = reg.Sucursal.trim().toUpperCase();
                 const sFil = sucursalFiltro.toUpperCase();
-                return sReg === sFil || (sFil === "SAN CRISTOBAL" && sReg === "SAN CRIS") || (sFil === "CENTRO LOGISTICO" && sReg === "VILLA NUEVA");
+                // Busca en las operativas para incluir equivalencias
+                const sucM = sucursalesOperativas.find(s => s.matchReg.includes(sFil));
+                return sucM ? sucM.matchReg.includes(sReg) : (sReg === sFil);
             });
         }
         if (vendedorFiltro !== 'Todos') {
@@ -345,7 +359,7 @@
         const totalRespuestas = registrosFiltrados.length;
         document.getElementById('kpiClientes').textContent = totalRespuestas;
 
-        // 2. FILTRAR TRÁFICO TOTAL
+        // 2. FILTRAR TRÁFICO TOTAL USANDO LA FUNCIÓN BUSCADORA
         let traficoFiltrado = datosDashboard.trafico;
         if (fInicio) {
             traficoFiltrado = traficoFiltrado.filter(t => extraerFechaLimpia(t.FECHA) >= fInicio);
@@ -357,17 +371,10 @@
         let sumatoriaTrafico = 0;
         traficoFiltrado.forEach(dia => {
             if (sucursalFiltro !== 'Todas') {
-                const colCorrespondiente = mapaColumnasTrafico[sucursalFiltro.toUpperCase()];
-                if (colCorrespondiente && dia[colCorrespondiente]) {
-                    const valor = parseInt(dia[colCorrespondiente]);
-                    if (!isNaN(valor)) sumatoriaTrafico += valor;
-                }
+                sumatoriaTrafico += obtenerTraficoDia(dia, sucursalFiltro);
             } else {
                 sucursalesOperativas.forEach(suc => {
-                    if (dia[suc.key]) {
-                        const valor = parseInt(dia[suc.key]);
-                        if (!isNaN(valor)) sumatoriaTrafico += valor;
-                    }
+                    sumatoriaTrafico += obtenerTraficoDia(dia, suc.id);
                 });
             }
         });
@@ -381,7 +388,7 @@
         }
         document.getElementById('kpiCaptura').textContent = tasaCaptura + "%";
 
-        // 4. KPI SUCURSAL LÍDER EVALUADO POR EFICIENCIA (% DE CAPTURA)
+        // 4. KPI SUCURSAL LÍDER POR % DE CAPTURA
         if (sucursalFiltro === "Todas") {
             let mejorTienda = "-";
             let mejorPorcentaje = -1;
@@ -389,17 +396,14 @@
             sucursalesOperativas.forEach(suc => {
                 let traficoTienda = 0;
                 traficoFiltrado.forEach(dia => {
-                    const val = parseInt(dia[suc.key]);
-                    if (!isNaN(val)) traficoTienda += val;
+                    traficoTienda += obtenerTraficoDia(dia, suc.id);
                 });
 
                 let respuestasTienda = datosDashboard.registros.filter(reg => {
                     const fReg = reg["Fecha 2"] || extraerFechaLimpia(reg.Fecha);
                     const matchFecha = (!fInicio || fReg >= fInicio) && (!fFin || fReg <= fFin);
                     if (!reg.Sucursal) return false;
-                    const sReg = reg.Sucursal.trim().toUpperCase();
-                    const matchSuc = (sReg === suc.matchReg || mapaColumnasTrafico[sReg] === suc.key);
-                    return matchFecha && matchSuc;
+                    return matchFecha && suc.matchReg.includes(reg.Sucursal.trim().toUpperCase());
                 }).length;
 
                 if (traficoTienda > 0) {
@@ -443,8 +447,7 @@
             const datosTraficoTiendas = sucursalesOperativas.map(suc => {
                 let totalSuc = 0;
                 traficoFiltrado.forEach(dia => {
-                    const val = parseInt(dia[suc.key]);
-                    if (!isNaN(val)) totalSuc += val;
+                    totalSuc += obtenerTraficoDia(dia, suc.id);
                 });
                 return totalSuc;
             });
@@ -454,8 +457,7 @@
                     const fReg = reg["Fecha 2"] || extraerFechaLimpia(reg.Fecha);
                     const matchFecha = (!fInicio || fReg >= fInicio) && (!fFin || fReg <= fFin);
                     if (!reg.Sucursal) return false;
-                    const sReg = reg.Sucursal.trim().toUpperCase();
-                    const matchSuc = (sReg === suc.matchReg || mapaColumnasTrafico[sReg] === suc.key);
+                    const matchSuc = suc.matchReg.includes(reg.Sucursal.trim().toUpperCase());
                     const matchVend = (vendedorFiltro === 'Todos' || (reg.Vendedor && reg.Vendedor.trim() === vendedorFiltro));
                     return matchFecha && matchSuc && matchVend;
                 }).length;
@@ -481,8 +483,7 @@
             const datosTraficoLinea = labelsGrafico.map(fechaDia => {
                 const diaTrafico = datosDashboard.trafico.find(t => extraerFechaLimpia(t.FECHA) === fechaDia);
                 if (!diaTrafico) return 0;
-                const colCorrespondiente = mapaColumnasTrafico[sucursalFiltro.toUpperCase()];
-                return (colCorrespondiente && parseInt(diaTrafico[colCorrespondiente])) || 0;
+                return obtenerTraficoDia(diaTrafico, sucursalFiltro);
             });
 
             const datosRespuestasLinea = labelsGrafico.map(fechaDia => {
@@ -490,9 +491,12 @@
                     const fReg = reg["Fecha 2"] || extraerFechaLimpia(reg.Fecha);
                     const matchFecha = (fReg === fechaDia);
                     if (!reg.Sucursal) return false;
+                    
                     const sReg = reg.Sucursal.trim().toUpperCase();
                     const sFil = sucursalFiltro.toUpperCase();
-                    const matchSuc = sReg === sFil || (sFil === "SAN CRISTOBAL" && sReg === "SAN CRIS") || (sFil === "CENTRO LOGISTICO" && sReg === "VILLA NUEVA");
+                    const sucM = sucursalesOperativas.find(s => s.matchReg.includes(sFil));
+                    const matchSuc = sucM ? sucM.matchReg.includes(sReg) : (sReg === sFil);
+
                     const matchVend = (vendedorFiltro === 'Todos' || (reg.Vendedor && reg.Vendedor.trim() === vendedorFiltro));
                     return matchFecha && matchSuc && matchVend;
                 }).length;
