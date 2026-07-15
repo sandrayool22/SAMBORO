@@ -29,7 +29,7 @@
         }
         .kpi h2 {
             color: #b51d2a;
-            font-size: 40px;
+            font-size: 32px;
             font-weight: bold;
         }
         .panel {
@@ -39,7 +39,6 @@
         .input[type="date"] {
             cursor: pointer;
         }
-        /* Estilo para el botón de la flecha del calendario */
         .btn-calendario {
             background-color: #fff;
             border-color: #dbdbdb;
@@ -49,7 +48,6 @@
         .btn-calendario:hover {
             background-color: #f5f5f5;
         }
-        /* Pantalla de carga (Loading Overlay) */
         #loadingOverlay {
             position: fixed;
             top: 0;
@@ -218,40 +216,41 @@
     let datosDashboard = null;
     let graficoTraficoInstancia = null;
 
+    // Mapeo corregido asegurando que "ZONA 7 OUTLET" busque estrictamente la columna con la letra O
     const mapaColumnasTrafico = {
-        "ZONA 7": "ZONA 7",
-        "ZONA 11": "ZONA 11",
-        "ZONA 9": "ZONA 9",
-        "ZONA 17": "ZONA 17",
-        "ZONA 7 OUTLET": "ZONA 7 OUTLET",
-        "SAN CRISTOBAL": "SAN CRISTOBAL",
-        "SAN CRIS": "SAN CRISTOBAL",
-        "VILLA NUEVA": "VILLA NUEVA",
-        "DECOCITY": "DECOCITY",
-        "VITERRA": "VITERRA",
-        "CENTRO LOGISTICO": "VILLA NUEVA"
+        "ZONA 7": "Z7 TRAFICO",
+        "ZONA 11": "Z11 TRAFICO",
+        "ZONA 9": "Z9 TRAFICO",
+        "ZONA 17": "Z17 TRAFICO",
+        "ZONA 7 OUTLET": "Z7O TRAFICO",
+        "SAN CRISTOBAL": "SCB TRAFICO",
+        "SAN CRIS": "SCB TRAFICO",
+        "VILLA NUEVA": "CL TRAFICO", 
+        "CENTRO LOGISTICO": "CL TRAFICO",
+        "DECOCITY": "DECOCITY TRAFICO",
+        "VITERRA": "VITERRA TRAFICO"
     };
 
+    // Estructura maestra corregida para Zona 7 Outlet usando la letra O en la llave y en la concordancia
     const sucursalesOperativas = [
-        { key: "ZONA 7", label: "Zona 7" },
-        { key: "ZONA 11", label: "Zona 11" },
-        { key: "ZONA 9", label: "Zona 9" },
-        { key: "ZONA 17", label: "Zona 17" },
-        { key: "ZONA 7 OUTLET", label: "Zona 7 Outlet" },
-        { key: "SAN CRISTOBAL", label: "San Cristóbal" },
-        { key: "VILLA NUEVA", label: "Villa Nueva" },
-        { key: "DECOCITY", label: "Decocity" },
-        { key: "VITERRA", label: "Viterra" }
+        { key: "Z7 TRAFICO", label: "Zona 7", matchReg: "ZONA 7" },
+        { key: "Z11 TRAFICO", label: "Zona 11", matchReg: "ZONA 11" },
+        { key: "Z9 TRAFICO", label: "Zona 9", matchReg: "ZONA 9" },
+        { key: "Z17 TRAFICO", label: "Zona 17", matchReg: "ZONA 17" },
+        { key: "Z7O TRAFICO", label: "Zona 7 Outlet", matchReg: "ZONA 7 OUTLET" },
+        { key: "SCB TRAFICO", label: "San Cristóbal", matchReg: "SAN CRISTOBAL" },
+        { key: "CL TRAFICO", label: "Centro Logístico / VN", matchReg: "CENTRO LOGISTICO" },
+        { key: "DECOCITY TRAFICO", label: "Decocity", matchReg: "DECOCITY" },
+        { key: "VITERRA TRAFICO", label: "Viterra", matchReg: "VITERRA" }
     ];
 
-    // Función que fuerza el despliegue del calendario al presionar la flecha
     function abrirCalendario(inputId) {
         const input = document.getElementById(inputId);
         if (input) {
             if (typeof input.showPicker === 'function') {
-                input.showPicker(); // Método moderno y estándar
+                input.showPicker();
             } else {
-                input.click(); // Retrocompatibilidad
+                input.click();
             }
         }
     }
@@ -272,7 +271,6 @@
             poblarFiltros();
             inicializarDashboard();
             
-            // Ocultar el diálogo de carga una vez finalizado todo el procesamiento
             document.getElementById('loadingOverlay').style.display = 'none';
         } catch (error) {
             console.error("Error cargando base de datos:", error);
@@ -291,10 +289,12 @@
 
         const selectSucursal = document.getElementById('filtroSucursal');
         Array.from(sucursales).sort().forEach(suc => {
-            const opt = document.createElement('option');
-            opt.value = suc;
-            opt.textContent = suc;
-            selectSucursal.appendChild(opt);
+            if(suc.toUpperCase() !== "SAN CRIS" && suc.toUpperCase() !== "VILLA NUEVA") {
+                const opt = document.createElement('option');
+                opt.value = suc;
+                opt.textContent = suc;
+                selectSucursal.appendChild(opt);
+            }
         });
 
         const selectVendedor = document.getElementById('filtroVendedor');
@@ -321,23 +321,22 @@
         const sucursalFiltro = document.getElementById('filtroSucursal').value;
         const vendedorFiltro = document.getElementById('filtroVendedor').value;
 
-        // 1. FILTRAR RESPUESTAS
+        // 1. FILTRAR RESPUESTAS DE FORMULARIO
         let registrosFiltrados = datosDashboard.registros;
 
         if (fInicio) {
-            registrosFiltrados = registrosFiltrados.filter(reg => {
-                const fStr = reg["Fecha 2"] || extraerFechaLimpia(reg.Fecha);
-                return fStr >= fInicio;
-            });
+            registrosFiltrados = registrosFiltrados.filter(reg => (reg["Fecha 2"] || extraerFechaLimpia(reg.Fecha)) >= fInicio);
         }
         if (fFin) {
-            registrosFiltrados = registrosFiltrados.filter(reg => {
-                const fStr = reg["Fecha 2"] || extraerFechaLimpia(reg.Fecha);
-                return fStr <= fFin;
-            });
+            registrosFiltrados = registrosFiltrados.filter(reg => (reg["Fecha 2"] || extraerFechaLimpia(reg.Fecha)) <= fFin);
         }
         if (sucursalFiltro !== 'Todas') {
-            registrosFiltrados = registrosFiltrados.filter(reg => reg.Sucursal && reg.Sucursal.trim().toUpperCase() === sucursalFiltro.toUpperCase());
+            registrosFiltrados = registrosFiltrados.filter(reg => {
+                if(!reg.Sucursal) return false;
+                const sReg = reg.Sucursal.trim().toUpperCase();
+                const sFil = sucursalFiltro.toUpperCase();
+                return sReg === sFil || (sFil === "SAN CRISTOBAL" && sReg === "SAN CRIS") || (sFil === "CENTRO LOGISTICO" && sReg === "VILLA NUEVA");
+            });
         }
         if (vendedorFiltro !== 'Todos') {
             registrosFiltrados = registrosFiltrados.filter(reg => reg.Vendedor && reg.Vendedor.trim() === vendedorFiltro);
@@ -346,7 +345,7 @@
         const totalRespuestas = registrosFiltrados.length;
         document.getElementById('kpiClientes').textContent = totalRespuestas;
 
-        // 2. FILTRAR TRÁFICO TOTAL
+        // 2. FILTRAR TRÁFICO
         let traficoFiltrado = datosDashboard.trafico;
         if (fInicio) {
             traficoFiltrado = traficoFiltrado.filter(t => extraerFechaLimpia(t.FECHA) >= fInicio);
@@ -382,24 +381,40 @@
         }
         document.getElementById('kpiCaptura').textContent = tasaCaptura + "%";
 
-        // 4. KPI SUCURSAL LÍDER
-        const conteoSucursales = {};
-        registrosFiltrados.forEach(r => {
-            if (r.Sucursal) {
-                const nombreSuc = r.Sucursal.trim();
-                conteoSucursales[nombreSuc] = (conteoSucursales[nombreSuc] || 0) + 1;
-            }
-        });
+        // 4. KPI SUCURSAL LÍDER POR PORCENTAJE DE CAPTURA
+        if (sucursalFiltro === "Todas") {
+            let mejorTienda = "-";
+            let mejorPorcentaje = -1;
 
-        let sucursalLider = "-";
-        let maxRegs = 0;
-        for (const suc in conteoSucursales) {
-            if (conteoSucursales[suc] > maxRegs) {
-                maxRegs = conteoSucursales[suc];
-                sucursalLider = suc;
-            }
+            sucursalesOperativas.forEach(suc => {
+                let traficoTienda = 0;
+                traficoFiltrado.forEach(dia => {
+                    const val = parseInt(dia[suc.key]);
+                    if (!isNaN(val)) traficoTienda += val;
+                });
+
+                let respuestasTienda = datosDashboard.registros.filter(reg => {
+                    const fReg = reg["Fecha 2"] || extraerFechaLimpia(reg.Fecha);
+                    const mFecha = (!fInicio || fReg >= fInicio) && (!fFin || fReg <= fFin);
+                    if (!reg.Sucursal) return false;
+                    const sReg = reg.Sucursal.trim().toUpperCase();
+                    // Comprobación flexible incluyendo la equivalencia de su llave en minúsculas/mayúsculas
+                    const mSuc = (sReg === suc.matchReg || mapaColumnasTrafico[sReg] === suc.key);
+                    return mFecha && mSuc;
+                }).length;
+
+                if (traficoTienda > 0) {
+                    let pct = (respuestasTienda / traficoTienda) * 100;
+                    if (pct > mejorPorcentaje) {
+                        mejorPorcentaje = pct;
+                        mejorTienda = `${suc.label} (${Math.round(pct)}%)`;
+                    }
+                }
+            });
+            document.getElementById('kpiLider').textContent = mejorTienda;
+        } else {
+            document.getElementById('kpiLider').textContent = sucursalFiltro;
         }
-        document.getElementById('kpiLider').textContent = sucursalLider;
 
         // 5. POBLAR TABLA INFORMATIVA
         const tablaCuerpo = document.getElementById('tablaRegistros');
@@ -439,13 +454,9 @@
                 return datosDashboard.registros.filter(reg => {
                     const fReg = reg["Fecha 2"] || extraerFechaLimpia(reg.Fecha);
                     const matchFecha = (!fInicio || fReg >= fInicio) && (!fFin || fReg <= fFin);
-                    
-                    let matchSuc = false;
-                    if (reg.Sucursal) {
-                        const sucFormateada = reg.Sucursal.trim().toUpperCase();
-                        matchSuc = (sucFormateada === suc.key || mapaColumnasTrafico[sucFormateada] === suc.key);
-                    }
-                    
+                    if (!reg.Sucursal) return false;
+                    const sReg = reg.Sucursal.trim().toUpperCase();
+                    const matchSuc = (sReg === suc.matchReg || mapaColumnasTrafico[sReg] === suc.key);
                     const matchVend = (vendedorFiltro === 'Todos' || (reg.Vendedor && reg.Vendedor.trim() === vendedorFiltro));
                     return matchFecha && matchSuc && matchVend;
                 }).length;
@@ -471,7 +482,6 @@
             const datosTraficoLinea = labelsGrafico.map(fechaDia => {
                 const diaTrafico = datosDashboard.trafico.find(t => extraerFechaLimpia(t.FECHA) === fechaDia);
                 if (!diaTrafico) return 0;
-                
                 const colCorrespondiente = mapaColumnasTrafico[sucursalFiltro.toUpperCase()];
                 return (colCorrespondiente && parseInt(diaTrafico[colCorrespondiente])) || 0;
             });
@@ -480,7 +490,10 @@
                 return datosDashboard.registros.filter(reg => {
                     const fReg = reg["Fecha 2"] || extraerFechaLimpia(reg.Fecha);
                     const matchFecha = (fReg === fechaDia);
-                    const matchSuc = (reg.Sucursal && reg.Sucursal.trim().toUpperCase() === sucursalFiltro.toUpperCase());
+                    if (!reg.Sucursal) return false;
+                    const sReg = reg.Sucursal.trim().toUpperCase();
+                    const sFil = sucursalFiltro.toUpperCase();
+                    const matchSuc = sReg === sFil || (sFil === "SAN CRISTOBAL" && sReg === "SAN CRIS") || (sFil === "CENTRO LOGISTICO" && sReg === "VILLA NUEVA");
                     const matchVend = (vendedorFiltro === 'Todos' || (reg.Vendedor && reg.Vendedor.trim() === vendedorFiltro));
                     return matchFecha && matchSuc && matchVend;
                 }).length;
@@ -529,7 +542,7 @@
                     y: { 
                         beginAtZero: true,
                         grid: { color: 'rgba(0,0,0,0.05)' },
-                        title: { display: true, text: 'Cantidad de Personas / Registros' }
+                        title: { display: true, text: 'Cantidad' }
                     },
                     x: { grid: { display: false } }
                 }
@@ -579,8 +592,7 @@
                 scales: {
                     y: { 
                         beginAtZero: true, 
-                        grid: { color: 'rgba(0,0,0,0.05)' },
-                        title: { display: true, text: 'Conteo de Visitas / Respuestas' }
+                        grid: { color: 'rgba(0,0,0,0.05)' }
                     },
                     x: { grid: { display: false } }
                 }
