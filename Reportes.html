@@ -1,310 +1,367 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    
-<title>Dashboard Samboro</title>
-
-<link rel="stylesheet"
-href="https://cdn.jsdelivr.net/npm/bulma@1.0.2/css/bulma.min.css">
-
-<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
-
-<style>
-
-body{
-
-    background:#F4EFE7;
-    font-family:'Roboto',sans-serif;
-
-}
-
-.hero-samboro{
-
-    color:#b51d2a;
-    font-size:45px;
-    font-weight:bold;
-
-}
-
-.subtitulo{
-
-    font-size:18px;
-    color:#555;
-
-}
-
-.card-dashboard{
-
-    border-radius:18px;
-
-}
-
-.kpi{
-
-    text-align:center;
-
-}
-
-.kpi h2{
-
-    color:#b51d2a;
-    font-size:40px;
-
-}
-
-.panel{
-
-    border-radius:18px;
-    min-height:380px;
-
-}
-
-</style>
-
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <title>Dashboard Samboro</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@1.0.2/css/bulma.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            background: #F4EFE7;
+            font-family: 'Roboto', sans-serif;
+        }
+        .hero-samboro {
+            color: #b51d2a;
+            font-size: 45px;
+            font-weight: bold;
+        }
+        .subtitulo {
+            font-size: 18px;
+            color: #555;
+        }
+        .card-dashboard {
+            border-radius: 18px;
+        }
+        .kpi {
+            text-align: center;
+        }
+        .kpi h2 {
+            color: #b51d2a;
+            font-size: 40px;
+            font-weight: bold;
+        }
+        .panel {
+            border-radius: 18px;
+            min-height: 380px;
+        }
+    </style>
 </head>
-
 <body>
 
 <section class="section">
-
-<div class="container">
-
-<div class="mb-6">
-
-<div class="hero-samboro">
-
-SAMBORO
-
-</div>
-
-<h1 class="title is-1">
-
-Business <span style="color:#b51d2a;">Intelligence</span>
-
-</h1>
-
-<p class="subtitulo">
-
-Análisis de tráfico y necesidades comerciales
-
-</p>
-
-</div>
-
-<div class="box card-dashboard">
-
-<div class="columns">
-
-<div class="column">
-
-<label>Fecha</label>
-
-<input class="input" type="date">
-
-</div>
-
-<div class="column">
-
-<label>Sucursal</label>
-
-<div class="select is-fullwidth">
-
-<select>
-
-<option>Todas</option>
-
-</select>
-
-</div>
-
-</div>
-
-<div class="column">
-
-<label>Vendedor</label>
-
-<div class="select is-fullwidth">
-
-<select>
-
-<option>Todos</option>
-
-</select>
-
-</div>
-
-</div>
-
-<div class="column is-narrow">
-
-<label>&nbsp;</label>
-
-<button class="button is-danger is-fullwidth">
-
-Actualizar
-
-</button>
-
-</div>
-
-</div>
-
-</div>
-
-<div class="columns">
-
-<div class="column">
-
-<div class="box card-dashboard kpi">
-
-<p>Clientes Hoy</p>
-
-<h2>0</h2>
-
-</div>
-
-</div>
-
-<div class="column">
-
-<div class="box card-dashboard kpi">
-
-<p>Tráfico Total</p>
-
-<h2>0</h2>
-
-</div>
-
-</div>
-
-<div class="column">
-
-<div class="box card-dashboard kpi">
-
-<p>Captura %</p>
-
-<h2>0%</h2>
-
-</div>
-
-</div>
-
-<div class="column">
-
-<div class="box card-dashboard kpi">
-
-<p>Sucursal Líder</p>
-
-<h2>-</h2>
-
-</div>
-
-</div>
-
-</div>
-
-<div class="columns">
-
-<div class="column">
-
-<div class="box panel">
-
-<h3 class="title is-5">
-
-<div class="box panel">
-
-    <h3 class="title is-5">
-        Tráfico de Clientes
-    </h3>
-
-    <canvas id="graficaTrafico"></canvas>
-
-</div>
-
-</h3>
-
-</div>
-
-</div>
-
-</div>
-
-<div class="columns">
-
-<div class="column">
-
-<div class="box panel">
-
-<h3 class="title is-5">
-
-Tráfico vs Respuestas
-
-</h3>
-
-</div>
-
-</div>
-
-</div>
-
-<div class="columns">
-
-<div class="column">
-
-<div class="box panel">
-
-<h3 class="title is-5">
-
-Ranking Asesores
-
-</h3>
-
-</div>
-
-</div>
-
-<div class="column">
-
-<div class="box panel">
-
-<h3 class="title is-5">
-
-Ranking Sucursales
-
-</h3>
-
-</div>
-
-</div>
-
-</div>
-
-<div class="columns">
-
-<div class="column">
-
-<div class="box panel">
-
-<h3 class="title is-5">
-
-Respuestas más frecuentes
-
-</h3>
-
-</div>
-
-</div>
-
-</div>
-
-</div>
-
+    <div class="container">
+        <div class="mb-6">
+            <div class="hero-samboro">SAMBORO</div>
+            <h1 class="title is-1">Business <span style="color:#b51d2a;">Intelligence</span></h1>
+            <p class="subtitulo">Análisis de tráfico y necesidades comerciales</p>
+        </div>
+
+        <div class="box card-dashboard">
+            <div class="columns">
+                <div class="column">
+                    <label class="label">Fecha</label>
+                    <input class="input" type="date" id="filtroFecha">
+                </div>
+                <div class="column">
+                    <label class="label">Sucursal</label>
+                    <div class="select is-fullwidth">
+                        <select id="filtroSucursal">
+                            <option value="Todas">Todas</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="column">
+                    <label class="label">Vendedor</label>
+                    <div class="select is-fullwidth">
+                        <select id="filtroVendedor">
+                            <option value="Todos">Todos</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="column is-narrow">
+                    <label class="label">&nbsp;</label>
+                    <button class="button is-danger is-fullwidth" id="btnActualizar">
+                        Actualizar
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="columns">
+            <div class="column">
+                <div class="box card-dashboard kpi">
+                    <p>Respuestas Obtenidas</p>
+                    <h2 id="kpiClientes">0</h2>
+                </div>
+            </div>
+            <div class="column">
+                <div class="box card-dashboard kpi">
+                    <p>Tráfico Total</p>
+                    <h2 id="kpiTrafico">0</h2>
+                </div>
+            </div>
+            <div class="column">
+                <div class="box card-dashboard kpi">
+                    <p>Captura %</p>
+                    <h2 id="kpiCaptura">0%</h2>
+                </div>
+            </div>
+            <div class="column">
+                <div class="box card-dashboard kpi">
+                    <p>Sucursal Líder</p>
+                    <h2 id="kpiLider">-</h2>
+                </div>
+            </div>
+        </div>
+
+        <div class="columns">
+            <div class="column">
+                <div class="box panel">
+                    <h3 class="title is-5">Tráfico de Clientes</h3>
+                    <div style="height: 300px; position: relative;">
+                        <canvas id="graficaTrafico"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="columns">
+            <div class="column">
+                <div class="box panel">
+                    <h3 class="title is-5">Últimas Interacciones (No Compra)</h3>
+                    <div style="max-height: 280px; overflow-y: auto;">
+                        <table class="table is-striped is-fullwidth">
+                            <thead>
+                                <tr>
+                                    <th>Fecha</th>
+                                    <th>Sucursal</th>
+                                    <th>Vendedor</th>
+                                    <th>Respuesta / Comentario</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tablaRegistros">
+                                <tr>
+                                    <td colspan="4" class="has-text-centered">Cargando análisis desde Google Sheets...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
 </section>
 
-</body>
+<script>
+    // URL de tu aplicación web vinculada con Api.gs
+    const URL_WEB_APP = 'https://script.google.com/macros/s/AKfycbwY-YaV4rhag-AGVyeOR9lEULPS4RNvZsgr1I68JwHw-MeQEfwrhgluU8VLarEqBJ_fLQ/exec'; 
 
+    let datosDashboard = null;
+    let graficoTraficoInstancia = null;
+
+    // Diccionario para normalizar los nombres de las sucursales con las columnas de tráfico
+    const mapaColumnasTrafico = {
+        "ZONA 7": "ZONA 7",
+        "ZONA 11": "ZONA 11",
+        "ZONA 9": "ZONA 9",
+        "ZONA 17": "ZONA 17",
+        "ZONA 7 OUTLET": "ZONA 7 OUTLET",
+        "SAN CRISTOBAL": "SAN CRISTOBAL",
+        "VILLA NUEVA": "VILLA NUEVA",
+        "DECOCITY": "DECOCITY",
+        "VITERRA": "VITERRA",
+        "CENTRO LOGISTICO": "VILLA NUEVA" // Mapeo si aplica usar los datos de Villa Nueva o similares
+    };
+
+    const columnasPorDefecto = ["ZONA 7", "ZONA 11", "ZONA 9", "ZONA 17", "ZONA 7 OUTLET", "SAN CRISTOBAL", "VILLA NUEVA", "DECOCITY", "VITERRA"];
+
+    async function cargarDatos() {
+        try {
+            const respuesta = await fetch(URL_WEB_APP);
+            datosDashboard = await respuesta.json();
+            
+            poblarFiltros();
+            inicializarDashboard();
+        } catch (error) {
+            console.error("Error cargando base de datos:", error);
+            document.getElementById('tablaRegistros').innerHTML = `<tr><td colspan="4" class="has-text-danger has-text-centered">Error al consultar los datos de Apps Script. Revisa los permisos de la implementación.</td></tr>`;
+        }
+    }
+
+    function poblarFiltros() {
+        const sucursales = new Set();
+        const vendedores = new Set();
+
+        datosDashboard.registros.forEach(reg => {
+            if (reg.Sucursal) sucursales.add(reg.Sucursal.trim());
+            if (reg.Vendedor) vendedores.add(reg.Vendedor.trim());
+        });
+
+        const selectSucursal = document.getElementById('filtroSucursal');
+        Array.from(sucursales).sort().forEach(suc => {
+            const opt = document.createElement('option');
+            opt.value = suc;
+            opt.textContent = suc;
+            selectSucursal.appendChild(opt);
+        });
+
+        const selectVendedor = document.getElementById('filtroVendedor');
+        Array.from(vendedores).sort().forEach(vend => {
+            const opt = document.createElement('option');
+            opt.value = vend;
+            opt.textContent = vend;
+            selectVendedor.appendChild(opt);
+        });
+    }
+
+    function inicializarDashboard() {
+        procesarYMostrarDatos();
+        document.getElementById('btnActualizar').addEventListener('click', procesarYMostrarDatos);
+    }
+
+    function procesarYMostrarDatos() {
+        const fechaFiltro = document.getElementById('filtroFecha').value;
+        const sucursalFiltro = document.getElementById('filtroSucursal').value;
+        const vendedorFiltro = document.getElementById('filtroVendedor').value;
+
+        // 1. Filtrar registros de la hoja "Registro_No_Compra"
+        let registrosFiltrados = datosDashboard.registros;
+
+        if (fechaFiltro) {
+            registrosFiltrados = registrosFiltrados.filter(reg => reg["Fecha 2"] === fechaFiltro || (reg.Fecha && reg.Fecha.startsWith(fechaFiltro)));
+        }
+        if (sucursalFiltro !== 'Todas') {
+            registrosFiltrados = registrosFiltrados.filter(reg => reg.Sucursal && reg.Sucursal.trim().toUpperCase() === sucursalFiltro.toUpperCase());
+        }
+        if (vendedorFiltro !== 'Todos') {
+            registrosFiltrados = registrosFiltrados.filter(reg => reg.Vendedor && reg.Vendedor.trim() === vendedorFiltro);
+        }
+
+        const totalRespuestas = registrosFiltrados.length;
+        document.getElementById('kpiClientes').textContent = totalRespuestas;
+
+        // 2. Calcular Tráfico de la hoja "TRAFICO DE CLIENTES"
+        let traficoFiltrado = datosDashboard.trafico;
+        if (fechaFiltro) {
+            traficoFiltrado = traficoFiltrado.filter(t => t.FECHA && t.FECHA.startsWith(fechaFiltro));
+        }
+
+        let sumatoriaTrafico = 0;
+
+        traficoFiltrado.forEach(dia => {
+            if (sucursalFiltro !== 'Todas') {
+                const colCorrespondiente = mapaColumnasTrafico[sucursalFiltro.toUpperCase()];
+                if (colCorrespondiente && dia[colCorrespondiente]) {
+                    const valor = parseInt(dia[colCorrespondiente]);
+                    if (!isNaN(valor)) sumatoriaTrafico += valor;
+                }
+            } else {
+                columnasPorDefecto.forEach(col => {
+                    if (dia[col]) {
+                        const valor = parseInt(dia[col]);
+                        if (!isNaN(valor)) sumatoriaTrafico += valor;
+                    }
+                });
+            }
+        });
+
+        document.getElementById('kpiTrafico').textContent = sumatoriaTrafico;
+
+        // 3. Captura % (Respuestas / Tráfico Total)
+        let tasaCaptura = 0;
+        if (sumatoriaTrafico > 0) {
+            tasaCaptura = Math.round((totalRespuestas / sumatoriaTrafico) * 100);
+        }
+        document.getElementById('kpiCaptura').textContent = tasaCaptura + "%";
+
+        // 4. Calcular Sucursal Líder
+        const conteoSucursales = {};
+        registrosFiltrados.forEach(r => {
+            if (r.Sucursal) {
+                const nombreSuc = r.Sucursal.trim();
+                conteoSucursales[nombreSuc] = (conteoSucursales[nombreSuc] || 0) + 1;
+            }
+        });
+
+        let sucursalLider = "-";
+        let maxRegs = 0;
+        for (const suc in conteoSucursales) {
+            if (conteoSucursales[suc] > maxRegs) {
+                maxRegs = conteoSucursales[suc];
+                sucursalLider = suc;
+            }
+        }
+        document.getElementById('kpiLider').textContent = sucursalLider;
+
+        // 5. Poblar la Tabla Informativa
+        const tablaCuerpo = document.getElementById('tablaRegistros');
+        tablaCuerpo.innerHTML = '';
+
+        if (registrosFiltrados.length === 0) {
+            tablaCuerpo.innerHTML = `<tr><td colspan="4" class="has-text-centered">No se encontraron interacciones para los filtros seleccionados.</td></tr>`;
+        } else {
+            // Mostrar últimos 15 de forma descendente
+            registrosFiltrados.slice(-15).reverse().forEach(reg => {
+                const fila = document.createElement('tr');
+                fila.innerHTML = `
+                    <td>${reg["Fecha 2"] || (reg.Fecha ? reg.Fecha.split(' ')[0] : '')}</td>
+                    <td>${reg.Sucursal || ''}</td>
+                    <td>${reg.Vendedor || ''}</td>
+                    <td>${reg["Respuesta cliente"] || ''}</td>
+                `;
+                tablaCuerpo.appendChild(fila);
+            });
+        }
+
+        // 6. Graficar Tráfico Histórico (Últimos 8 días registrados)
+        const ultimosRegistrosTrafico = datosDashboard.trafico.slice(-8);
+        const labelsGrafico = ultimosRegistrosTrafico.map(d => d.FECHA ? d.FECHA.split('T')[0] : '');
+        const datosGrafico = ultimosRegistrosTrafico.map(dia => {
+            let totalDia = 0;
+            if (sucursalFiltro !== 'Todas') {
+                const colCorrespondiente = mapaColumnasTrafico[sucursalFiltro.toUpperCase()];
+                totalDia = (colCorrespondiente && parseInt(dia[colCorrespondiente])) || 0;
+            } else {
+                columnasPorDefecto.forEach(col => {
+                    const val = parseInt(dia[col]);
+                    if (!isNaN(val)) totalDia += val;
+                });
+            }
+            return totalDia;
+        });
+
+        renderizarGrafico(labelsGrafico, datosGrafico, sucursalFiltro);
+    }
+
+    function renderizarGrafico(labels, datos, sucursal) {
+        const ctx = document.getElementById('graficaTrafico').getContext('2d');
+        if (graficoTraficoInstancia) {
+            graficoTraficoInstancia.destroy();
+        }
+
+        graficoTraficoInstancia = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: `Tendencia de Tráfico - ${sucursal}`,
+                    data: datos,
+                    borderColor: '#b51d2a',
+                    backgroundColor: 'rgba(181, 29, 42, 0.08)',
+                    borderWidth: 3,
+                    fill: true,
+                    tension: 0.3,
+                    pointBackgroundColor: '#b51d2a'
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: true, position: 'top' }
+                },
+                scales: {
+                    y: { beginAtZero: true, grid: { color: 'rgba(0,0,0,0.05)' } },
+                    x: { grid: { display: false } }
+                }
+            }
+        });
+    }
+
+    window.onload = cargarDatos;
+</script>
+</body>
 </html>
