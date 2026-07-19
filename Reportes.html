@@ -35,7 +35,7 @@
 
 <div id="loadingOverlay">
     <div class="spinner"></div>
-    <h2 class="title is-4" style="color: #b51d2a;">Cargando nueva estructura de Google Sheets...</h2>
+    <h2 class="title is-4" style="color: #b51d2a;">Sincronizando Dashboard con Google Sheets...</h2>
 </div>
 
 <section class="section">
@@ -46,7 +46,7 @@
             <p class="subtitulo">Análisis de tráfico y necesidades comerciales</p>
         </div>
 
-        <!-- Filtros -->
+        <!-- Filtros Dinámicos -->
         <div class="box card-dashboard">
             <div class="columns">
                 <div class="column">
@@ -86,7 +86,7 @@
             </div>
         </div>
 
-        <!-- KPIs -->
+        <!-- Bloque de KPIs -->
         <div class="columns">
             <div class="column"><div class="box card-dashboard kpi"><p>Respuestas Obtenidas</p><h2 id="kpiClientes">0</h2></div></div>
             <div class="column"><div class="box card-dashboard kpi"><p>Tráfico Total</p><h2 id="kpiTrafico">0</h2></div></div>
@@ -94,7 +94,7 @@
             <div class="column"><div class="box card-dashboard kpi"><p>Sucursal Líder</p><h2 id="kpiLider">-</h2></div></div>
         </div>
 
-        <!-- Gráfica -->
+        <!-- Sección de Gráficos -->
         <div class="columns">
             <div class="column">
                 <div class="box panel">
@@ -104,7 +104,7 @@
             </div>
         </div>
 
-        <!-- Tabla -->
+        <!-- Bitácora de Respuestas de Clientes -->
         <div class="columns">
             <div class="column">
                 <div class="box panel">
@@ -115,7 +115,7 @@
                                 <tr><th>Fecha</th><th>Sucursal</th><th>Vendedor</th><th>Respuesta / Comentario</th></tr>
                             </thead>
                             <tbody id="tablaRegistros">
-                                <tr><td colspan="4" class="has-text-centered">Cargando...</td></tr>
+                                <tr><td colspan="4" class="has-text-centered">Conectando...</td></tr>
                             </tbody>
                         </table>
                     </div>
@@ -127,11 +127,13 @@
 </section>
 
 <script>
-    const URL_WEB_APP = 'https://script.google.com/macros/s/AKfycbwY-YaV4rhag-AGVyeOR9lEULPS4RNvZsgr1I68JwHw-MeQEfwrhgluU8VLarEqBJ_fLQ/exec'; 
+    // URL Actualizada de tu nueva implementación en Apps Script
+    const URL_WEB_APP = 'https://script.google.com/macros/s/AKfycby21OZY71lORx7Z7T5OLOHCfdBVW8wZp9UD6ayEGiYyZU1jhUbPQGbBDn9fz_jOxEJwNw/exec'; 
+    
     let datosDashboard = null;
     let graficoTraficoInstancia = null;
 
-    // Listado maestro unificado para cruzar las hojas 'RESPUESTAS POR TIENDA' y 'TRAFICO DE CLIENTES POR TIENDA'
+    // Estructura maestra unificada basada en tus hojas reestructuradas
     const sucursalesMaestras = [
         { id: "ZONA 7", colTrafico: "ZONA 7", aliasesReg: ["ZONA 7", "ZONA7"], label: "Zona 7" },
         { id: "ZONA 11", colTrafico: "ZONA 11", aliasesReg: ["ZONA 11", "ZONA11"], label: "Zona 11" },
@@ -154,7 +156,6 @@
         return campo.toString().trim().split(' ')[0].split('T')[0];
     }
 
-    // Valida si una sucursal de los logs pertenece al grupo unificado de la tienda maestra
     function perteneceASucursal(nombreHoja, sucursalMaestraId) {
         if (!nombreHoja) return false;
         const nombreLimpio = nombreHoja.trim().toUpperCase();
@@ -171,25 +172,19 @@
             document.getElementById('loadingOverlay').style.display = 'none';
         } catch (error) {
             console.error(error);
-            document.getElementById('loadingOverlay').innerHTML = `<h2 class="title is-4 has-text-danger">Error al conectar con la base de datos.</h2>`;
+            document.getElementById('loadingOverlay').innerHTML = `<h2 class="title is-4 has-text-danger has-text-centered" style="margin-top:20px;">Error al conectar con la base de datos.<br><span style="font-size:14px; color:#555;">Revisa el estado de la aplicación web en Apps Script.</span></h2>`;
         }
     }
 
     function poblarFiltros() {
-        const sucursales = new Set();
         const vendedores = new Set();
 
-        // Poblamos desde la bitácora real de respuestas
+        // Extraer listado único de vendedores desde el log general de respuestas
         datosDashboard.respuestasGenerales.forEach(r => {
-            if (r["Columna 1"]) {
-                let nombre = r["Columna 1"].trim();
-                if(nombre.toUpperCase() === "SAN CRIS") nombre = "SAN CRISTOBAL";
-                if(nombre.toUpperCase() === "CENTRO LOGISTICO" || nombre.toUpperCase() === "VILLA NUEVA") nombre = "PLANTA VILLA NUEVA";
-                sucursales.add(nombre.toUpperCase());
-            }
             if (r["USUARIO DE VENDEDOR"]) vendedores.add(r["USUARIO DE VENDEDOR"].trim());
         });
 
+        // Poblar Selector de Sucursales de forma limpia
         const selectSucursal = document.getElementById('filtroSucursal');
         sucursalesMaestras.forEach(s => {
             const opt = document.createElement('option');
@@ -198,6 +193,7 @@
             selectSucursal.appendChild(opt);
         });
 
+        // Poblar Selector de Vendedores
         const selectVendedor = document.getElementById('filtroVendedor');
         Array.from(vendedores).sort().forEach(v => {
             const opt = document.createElement('option');
@@ -205,6 +201,7 @@
             selectVendedor.appendChild(opt);
         });
 
+        // Poner por defecto la fecha del día de hoy en el periodo inicial
         const hoyStr = new Date().toISOString().split('T')[0];
         document.getElementById('filtroFechaInicio').value = hoyStr;
         document.getElementById('filtroFechaFin').value = hoyStr;
@@ -221,7 +218,7 @@
         const sucursalFiltro = document.getElementById('filtroSucursal').value;
         const vendedorFiltro = document.getElementById('filtroVendedor').value;
 
-        // 1. FILTRAR RESPUESTAS OBTENIDAS (Hoja: RESPUESTAS POR TIENDA)
+        // 1. FILTRAR LOG DE RESPUESTAS GENERALES (Hoja: RESPUESTAS POR TIENDA)
         let resFiltradas = datosDashboard.respuestasGenerales || [];
         if (fInicio) resFiltradas = resFiltradas.filter(r => extraerFechaLimpia(r["Marca temporal"] || r["Columna 2"]) >= fInicio);
         if (fFin) resFiltradas = resFiltradas.filter(r => extraerFechaLimpia(r["Marca temporal"] || r["Columna 2"]) <= fFin);
@@ -231,7 +228,7 @@
         const totalRespuestas = resFiltradas.length;
         document.getElementById('kpiClientes').textContent = totalRespuestas;
 
-        // 2. FILTRAR TRÁFICO TOTAL (Hoja: TRAFICO DE CLIENTES POR TIENDA)
+        // 2. FILTRAR HISTÓRICO DE TRÁFICO (Hoja: TRAFICO DE CLIENTES POR TIENDA)
         let traficoFiltrado = datosDashboard.trafico || [];
         if (fInicio) traficoFiltrado = traficoFiltrado.filter(t => extraerFechaLimpia(t.FECHA) >= fInicio);
         if (fFin) traficoFiltrado = traficoFiltrado.filter(t => extraerFechaLimpia(t.FECHA) <= fFin);
@@ -249,16 +246,17 @@
         });
         document.getElementById('kpiTrafico').textContent = sumatoriaTrafico;
 
-        // 3. CAPTURA %
+        // 3. KPI CAPTURA %
         let tasaCaptura = sumatoriaTrafico > 0 ? Math.round((totalRespuestas / sumatoriaTrafico) * 100) : 0;
         document.getElementById('kpiCaptura').textContent = tasaCaptura + "%";
 
-        // 4. KPI SUCURSAL LÍDER POR EFICIENCIA
+        // 4. KPI SUCURSAL LÍDER EVALUADO POR EFICIENCIA (% DE CAPTURA)
         if (sucursalFiltro === "Todas") {
             let mejorTienda = "-"; let mejorPct = -1;
             sucursalesMaestras.forEach(s => {
                 let tTienda = 0;
                 traficoFiltrado.forEach(dia => { tTienda += parseInt(dia[s.colTrafico]) || 0; });
+                
                 let rTienda = (datosDashboard.respuestasGenerales || []).filter(r => {
                     const fReg = extraerFechaLimpia(r["Marca temporal"] || r["Columna 2"]);
                     return (!fInicio || fReg >= fInicio) && (!fFin || fReg <= fFin) && perteneceASucursal(r["Columna 1"], s.id);
@@ -275,7 +273,7 @@
             document.getElementById('kpiLider').textContent = config ? config.label : sucursalFiltro;
         }
 
-        // 5. BITÁCORA DE TEXTOS (Hoja: Registro_No_Compra)
+        // 5. BITÁCORA DETALLADA DE TEXTOS (Hoja: Registro_No_Compra)
         let registrosComentarios = datosDashboard.registros || [];
         if (fInicio) registrosComentarios = registrosComentarios.filter(reg => (reg["Fecha 2"] || extraerFechaLimpia(reg.Fecha)) >= fInicio);
         if (fFin) registrosComentarios = registrosComentarios.filter(reg => (reg["Fecha 2"] || extraerFechaLimpia(reg.Fecha)) <= fFin);
@@ -284,7 +282,7 @@
         const tablaCuerpo = document.getElementById('tablaRegistros');
         tablaCuerpo.innerHTML = '';
         if (registrosComentarios.length === 0) {
-            tablaCuerpo.innerHTML = `<tr><td colspan="4" class="has-text-centered">Sin interacciones de texto en este rango.</td></tr>`;
+            tablaCuerpo.innerHTML = `<tr><td colspan="4" class="has-text-centered">Ningún comentario cualitativo en este rango.</td></tr>`;
         } else {
             registrosComentarios.slice(-15).reverse().forEach(reg => {
                 const fila = document.createElement('tr');
@@ -293,7 +291,7 @@
             });
         }
 
-        // 6. RENDERIZACIÓN DE GRÁFICAS
+        // 6. RENDERIZACIÓN DE GRÁFICAS (Barras para "Todas", Líneas para Tendencia Individual)
         if (sucursalFiltro === "Todas") {
             document.getElementById('tituloGrafica').textContent = "Comparativa entre Sucursales: Tráfico de Clientes vs Respuestas";
             const labelsTiendas = sucursalesMaestras.map(s => s.label);
