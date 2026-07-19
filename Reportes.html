@@ -4,27 +4,57 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <title>Dashboard Samboro</title>
+    <title>Dashboard Samboro - BI</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@1.0.2/css/bulma.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
     <style>
         body { background: #F4EFE7; font-family: 'Roboto', sans-serif; }
-        .hero-samboro { color: #b51d2a; font-size: 45px; font-weight: bold; }
-        .subtitulo { font-size: 18px; color: #555; }
-        .card-dashboard { border-radius: 18px; }
-        .kpi { text-align: center; }
-        .kpi h2 { color: #b51d2a; font-size: 36px; font-weight: bold; }
-        .panel { border-radius: 18px; min-height: 380px; }
-        .input[type="date"] { cursor: pointer; }
-        .btn-calendario { background-color: #fff; border-color: #dbdbdb; color: #b51d2a; cursor: pointer; }
+        
+        /* Encabezado Estético Tipo Corporativo */
+        .header-container {
+            background: linear-gradient(135deg, #b51d2a 0%, #7d101a 100%);
+            border-radius: 18px;
+            padding: 2.5rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 8px 24px rgba(181, 29, 42, 0.15);
+        }
+        .hero-samboro { color: #FFF; font-size: 48px; font-weight: 700; letter-spacing: 2px; line-height: 1; }
+        .hero-title { color: #FFF; font-size: 28px; font-weight: 300; margin-top: 5px; }
+        .hero-title span { font-weight: 700; color: #F4EFE7; }
+        .subtitulo { font-size: 16px; color: rgba(255, 255, 255, 0.85); margin-top: 10px; font-style: italic; }
+        
+        .card-dashboard { border-radius: 18px; box-shadow: 0 4px 12px rgba(0,0,0,0.03); }
+        .kpi { text-align: center; transition: transform 0.2s; }
+        .kpi:hover { transform: translateY(-3px); }
+        .kpi p { font-size: 14px; font-weight: 700; color: #666; text-transform: uppercase; letter-spacing: 0.5px; }
+        .kpi h2 { color: #b51d2a; font-size: 38px; font-weight: bold; margin-top: 5px; }
+        .panel { border-radius: 18px; min-height: 380px; box-shadow: 0 4px 12px rgba(0,0,0,0.03); }
+        .input[type="date"], .select select { cursor: pointer; border-radius: 8px; }
+        .btn-calendario { background-color: #fff; border-color: #dbdbdb; color: #b51d2a; cursor: pointer; border-radius: 0 8px 8px 0; }
         .btn-calendario:hover { background-color: #f5f5f5; }
+        .button.is-danger { border-radius: 8px; font-weight: 700; background-color: #b51d2a; }
+        
+        /* Contenedor Responsivo con Barra de Desplazamiento para el Gráfico */
+        .wrapper-grafica {
+            width: 100%;
+            overflow-x: auto; /* Activa la barra horizontal si es necesario */
+            scrollbar-width: thin;
+            scrollbar-color: #b51d2a rgba(0,0,0,0.05);
+        }
+        .container-interno-grafica {
+            min-width: 800px; /* Asegura un tamaño mínimo óptimo para que no se apriete */
+            height: 380px;
+            position: relative;
+        }
+
+        /* Pantalla de carga (Loading Overlay) */
         #loadingOverlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(244, 239, 231, 0.95); z-index: 9999;
+            background: rgba(244, 239, 231, 0.98); z-index: 9999;
             display: flex; flex-direction: column; justify-content: center; align-items: center;
         }
         .spinner {
-            border: 6px solid #f3f3f3; border-top: 6px solid #b51d2a;
+            border: 6px solid #e1dcd5; border-top: 6px solid #b51d2a;
             border-radius: 50%; width: 50px; height: 50px;
             animation: spin 1s linear infinite; margin-bottom: 15px;
         }
@@ -33,20 +63,23 @@
 </head>
 <body>
 
+<!-- Pantalla de Carga -->
 <div id="loadingOverlay">
     <div class="spinner"></div>
-    <h2 class="title is-4" style="color: #b51d2a;">Sincronizando Dashboard en tiempo real...</h2>
+    <h2 class="title is-4" style="color: #b51d2a; letter-spacing: 0.5px;">Sincronizando Business Intelligence...</h2>
 </div>
 
 <section class="section">
     <div class="container">
-        <div class="mb-6">
+        
+        <!-- Encabezado Estilizado -->
+        <div class="header-container">
             <div class="hero-samboro">SAMBORO</div>
-            <h1 class="title is-1">Business <span style="color:#b51d2a;">Intelligence</span></h1>
-            <p class="subtitulo">Análisis de tráfico y necesidades comerciales</p>
+            <h1 class="hero-title">Business <span>Intelligence</span></h1>
+            <p class="subtitulo">Módulo de control de tráfico diario y tasas de captura comercial</p>
         </div>
 
-        <!-- Filtros Dinámicos -->
+        <!-- Filtros -->
         <div class="box card-dashboard">
             <div class="columns">
                 <div class="column">
@@ -81,25 +114,32 @@
                 </div>
                 <div class="column is-narrow">
                     <label class="label">&nbsp;</label>
-                    <button class="button is-danger is-fullwidth" id="btnActualizar">Actualizar</button>
+                    <button class="button is-danger is-fullwidth" id="btnActualizar">Actualizar Dashboard</button>
                 </div>
             </div>
         </div>
 
         <!-- KPIs -->
-        <div class="columns">
+        <div class="columns mb-5">
             <div class="column"><div class="box card-dashboard kpi"><p>Respuestas Obtenidas</p><h2 id="kpiClientes">0</h2></div></div>
             <div class="column"><div class="box card-dashboard kpi"><p>Tráfico Total</p><h2 id="kpiTrafico">0</h2></div></div>
             <div class="column"><div class="box card-dashboard kpi"><p>Captura %</p><h2 id="kpiCaptura">0%</h2></div></div>
             <div class="column"><div class="box card-dashboard kpi"><p>Sucursal Líder</p><h2 id="kpiLider">-</h2></div></div>
         </div>
 
-        <!-- Gráficas -->
+        <!-- Panel de Gráficas con Barra Desplazable -->
         <div class="columns">
             <div class="column">
                 <div class="box panel">
-                    <h3 class="title is-5" id="tituloGrafica">Comparativa de Tiendas</h3>
-                    <div style="height: 380px; position: relative;"><canvas id="graficaTrafico"></canvas></div>
+                    <h3 class="title is-5" id="tituloGrafica" style="color: #444;">Comparativa de Tiendas</h3>
+                    <p class="help is-info mb-3"><i class="fa-solid fa-circle-info"></i> 💡 <strong>Tip para el Jefe:</strong> Haz clic sobre los botones de la leyenda ("Tráfico Total" o "Respuestas") para ocultar o mostrar cada métrica a tu gusto.</p>
+                    
+                    <!-- Contenedor Desplazable -->
+                    <div class="wrapper-grafica">
+                        <div class="container-interno-grafica">
+                            <canvas id="graficaTrafico"></canvas>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -108,14 +148,14 @@
         <div class="columns">
             <div class="column">
                 <div class="box panel">
-                    <h3 class="title is-5">Últimas Interacciones (No Compra)</h3>
+                    <h3 class="title is-5" style="color: #444;">Últimas Interacciones (No Compra)</h3>
                     <div style="max-height: 280px; overflow-y: auto;">
                         <table class="table is-striped is-fullwidth">
                             <thead>
                                 <tr><th>Fecha</th><th>Sucursal</th><th>Vendedor</th><th>Respuesta / Comentario</th></tr>
                             </thead>
                             <tbody id="tablaRegistros">
-                                <tr><td colspan="4" class="has-text-centered">Conectando...</td></tr>
+                                <tr><td colspan="4" class="has-text-centered">Estableciendo puente de datos...</td></tr>
                             </tbody>
                         </table>
                     </div>
@@ -132,7 +172,6 @@
     let datosDashboard = null;
     let graficoTraficoInstancia = null;
 
-    // Matriz exacta mapeada con las opciones visuales de tus registros en bruto
     const sucursalesMaestras = [
         { id: "ZONA 7", colTrafico: "ZONA 7", aliasesReg: ["ZONA 7", "ZONA7"], label: "Zona 7" },
         { id: "ZONA 11", colTrafico: "ZONA 11", aliasesReg: ["ZONA 11", "ZONA11"], label: "Zona 11" },
@@ -150,7 +189,6 @@
         if (input && typeof input.showPicker === 'function') input.showPicker();
     }
 
-    // Normalizador inteligente que convierte formatos DD/MM/AAAA y marcas temporales a AAAA-MM-DD
     function extraerFechaLimpia(campo) {
         if (!campo) return '';
         let texto = campo.toString().trim().split(' ')[0].split('T')[0];
@@ -185,8 +223,6 @@
 
     function poblarFiltros() {
         const vendedores = new Set();
-
-        // Extraer los vendedores directamente desde la hoja de origen
         datosDashboard.registros.forEach(reg => {
             if (reg.Vendedor) vendedores.add(reg.Vendedor.trim());
         });
@@ -194,8 +230,7 @@
         const selectSucursal = document.getElementById('filtroSucursal');
         sucursalesMaestras.forEach(s => {
             const opt = document.createElement('option');
-            opt.value = s.id;
-            opt.textContent = s.label;
+            opt.value = s.id; opt.textContent = s.label;
             selectSucursal.appendChild(opt);
         });
 
@@ -222,32 +257,17 @@
         const sucursalFiltro = document.getElementById('filtroSucursal').value;
         const vendedorFiltro = document.getElementById('filtroVendedor').value;
 
-        // 1. FILTRAR Y CONTAR REGISTROS (Directamente desde Registro_No_Compra)
+        // 1. FILTRAR REGISTROS
         let registrosFiltrados = datosDashboard.registros || [];
-        
-        if (fInicio) {
-            registrosFiltrados = registrosFiltrados.filter(reg => {
-                const fStr = reg["Fecha 2"] || extraerFechaLimpia(reg.Fecha);
-                return fStr >= fInicio;
-            });
-        }
-        if (fFin) {
-            registrosFiltrados = registrosFiltrados.filter(reg => {
-                const fStr = reg["Fecha 2"] || extraerFechaLimpia(reg.Fecha);
-                return fStr <= fFin;
-            });
-        }
-        if (sucursalFiltro !== 'Todas') {
-            registrosFiltrados = registrosFiltrados.filter(reg => perteneceASucursal(reg.Sucursal, sucursalFiltro));
-        }
-        if (vendedorFiltro !== 'Todos') {
-            registrosFiltrados = registrosFiltrados.filter(reg => reg.Vendedor && reg.Vendedor.trim() === vendedorFiltro);
-        }
+        if (fInicio) registrosFiltrados = registrosFiltrados.filter(reg => (reg["Fecha 2"] || extraerFechaLimpia(reg.Fecha)) >= fInicio);
+        if (fFin) registrosFiltrados = registrosFiltrados.filter(reg => (reg["Fecha 2"] || extraerFechaLimpia(reg.Fecha)) <= fFin);
+        if (sucursalFiltro !== 'Todas') registrosFiltrados = registrosFiltrados.filter(reg => perteneceASucursal(reg.Sucursal, sucursalFiltro));
+        if (vendedorFiltro !== 'Todos') registrosFiltrados = registrosFiltrados.filter(reg => reg.Vendedor && reg.Vendedor.trim() === vendedorFiltro);
 
         const totalRespuestas = registrosFiltrados.length;
         document.getElementById('kpiClientes').textContent = totalRespuestas;
 
-        // 2. FILTRAR TRÁFICO (Hoja: TRAFICO DE CLIENTES POR TIENDA)
+        // 2. FILTRAR TRÁFICO
         let traficoFiltrado = datosDashboard.trafico || [];
         if (fInicio) traficoFiltrado = traficoFiltrado.filter(t => extraerFechaLimpia(t.FECHA) >= fInicio);
         if (fFin) traficoFiltrado = traficoFiltrado.filter(t => extraerFechaLimpia(t.FECHA) <= fFin);
@@ -269,7 +289,7 @@
         let tasaCaptura = sumatoriaTrafico > 0 ? Math.round((totalRespuestas / sumatoriaTrafico) * 100) : 0;
         document.getElementById('kpiCaptura').textContent = tasaCaptura + "%";
 
-        // 4. KPI SUCURSAL LÍDER POR % DE CAPTURA DIRECTA
+        // 4. SUCURSAL LÍDER
         if (sucursalFiltro === "Todas") {
             let mejorTienda = "-"; let mejorPct = -1;
             sucursalesMaestras.forEach(s => {
@@ -292,7 +312,7 @@
             document.getElementById('kpiLider').textContent = config ? config.label : sucursalFiltro;
         }
 
-        // 5. POBLAR TABLA DE ÚLTIMOS COMENTARIOS
+        // 5. POBLAR TABLA COMENTARIOS
         const tablaCuerpo = document.getElementById('tablaRegistros');
         tablaCuerpo.innerHTML = '';
         if (registrosFiltrados.length === 0) {
@@ -305,7 +325,7 @@
             });
         }
 
-        // 6. RENDERIZACIÓN DE GRÁFICAS (Barras vs Líneas)
+        // 6. RENDERIZACIÓN DE GRÁFICAS
         if (sucursalFiltro === "Todas") {
             document.getElementById('tituloGrafica').textContent = "Comparativa entre Sucursales: Tráfico de Clientes vs Respuestas";
             const labelsTiendas = sucursalesMaestras.map(s => s.label);
@@ -358,7 +378,11 @@
                     { label: 'Respuestas Recolectadas', data: dRespuestas, backgroundColor: '#23d1b6', borderRadius: 5 }
                 ]
             },
-            options: { responsive: true, maintainAspectRatio: false }
+            options: { 
+                responsive: true, 
+                maintainAspectRatio: false,
+                plugins: { legend: { display: true, position: 'top', labels: { boxWidth: 20, font: { weight: 'bold' } } } }
+            }
         });
     }
 
@@ -370,11 +394,15 @@
             data: {
                 labels: labels,
                 datasets: [
-                    { label: 'Tráfico', data: dTrafico, borderColor: '#b51d2a', backgroundColor: 'rgba(181,29,42,0.04)', fill: true, tension: 0.2 },
-                    { label: 'Respuestas', data: dRespuestas, borderColor: '#23d1b6', fill: false, tension: 0.2 }
+                    { label: 'Tráfico Total', data: dTrafico, borderColor: '#b51d2a', backgroundColor: 'rgba(181,29,42,0.04)', fill: true, tension: 0.2, borderWidth: 3 },
+                    { label: 'Respuestas Recolectadas', data: dRespuestas, borderColor: '#23d1b6', fill: false, tension: 0.2, borderWidth: 3 }
                 ]
             },
-            options: { responsive: true, maintainAspectRatio: false }
+            options: { 
+                responsive: true, 
+                maintainAspectRatio: false,
+                plugins: { legend: { display: true, position: 'top', labels: { boxWidth: 20, font: { weight: 'bold' } } } }
+            }
         });
     }
 
