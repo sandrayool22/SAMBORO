@@ -10,7 +10,7 @@
     <style>
         body { background: #F4EFE7; font-family: 'Roboto', sans-serif; }
         
-        /* Encabezado Estético Tipo Corporativo */
+        /* Encabezado Estético Corporativo */
         .header-container {
             background: linear-gradient(135deg, #b51d2a 0%, #7d101a 100%);
             border-radius: 18px;
@@ -34,15 +34,9 @@
         .btn-calendario:hover { background-color: #f5f5f5; }
         .button.is-danger { border-radius: 8px; font-weight: 700; background-color: #b51d2a; }
         
-        /* Contenedor Responsivo con Barra de Desplazamiento para el Gráfico */
+        /* Contenedor Adaptable Inteligente: Se contrae y autoajusta en pantalla */
         .wrapper-grafica {
             width: 100%;
-            overflow-x: auto; /* Activa la barra horizontal si es necesario */
-            scrollbar-width: thin;
-            scrollbar-color: #b51d2a rgba(0,0,0,0.05);
-        }
-        .container-interno-grafica {
-            min-width: 800px; /* Asegura un tamaño mínimo óptimo para que no se apriete */
             height: 380px;
             position: relative;
         }
@@ -127,18 +121,16 @@
             <div class="column"><div class="box card-dashboard kpi"><p>Sucursal Líder</p><h2 id="kpiLider">-</h2></div></div>
         </div>
 
-        <!-- Panel de Gráficas con Barra Desplazable -->
+        <!-- Panel de Gráficas Inteligente -->
         <div class="columns">
             <div class="column">
                 <div class="box panel">
                     <h3 class="title is-5" id="tituloGrafica" style="color: #444;">Comparativa de Tiendas</h3>
-                    <p class="help is-info mb-3"><i class="fa-solid fa-circle-info"></i> 💡 <strong>Tip:</strong> Haz clic sobre los botones de la leyenda ("Tráfico Total" o "Respuestas") para ocultar o mostrar cada métrica a tu gusto.</p>
+                    <p class="help is-info mb-3">💡 <strong>Tip para el Jefe:</strong> Haz clic sobre las leyendas ("Tráfico Total" o "Respuestas") para prender/apagar métricas.</p>
                     
-                    <!-- Contenedor Desplazable -->
+                    <!-- Área de Gráfico Auto-Contraíble -->
                     <div class="wrapper-grafica">
-                        <div class="container-interno-grafica">
-                            <canvas id="graficaTrafico"></canvas>
-                        </div>
+                        <canvas id="graficaTrafico"></canvas>
                     </div>
                 </div>
             </div>
@@ -241,6 +233,7 @@
             selectVendedor.appendChild(opt);
         });
 
+        // Configurar por defecto la fecha del día de hoy (19 de Julio de 2026)
         const hoyStr = new Date().toISOString().split('T')[0];
         document.getElementById('filtroFechaInicio').value = hoyStr;
         document.getElementById('filtroFechaFin').value = hoyStr;
@@ -256,6 +249,19 @@
         const fFin = document.getElementById('filtroFechaFin').value;
         const sucursalFiltro = document.getElementById('filtroSucursal').value;
         const vendedorFiltro = document.getElementById('filtroVendedor').value;
+
+        // VALIDACIÓN DE FECHAS INVÁLIDAS / AL REVÉS
+        if (fInicio && fFin && fInicio > fFin) {
+            alert("❌ Error: La Fecha Inicio no puede ser mayor que la Fecha Fin. Por favor, corrige el rango.");
+            // Limpiar KPIs y tabla por seguridad
+            document.getElementById('kpiClientes').textContent = "0";
+            document.getElementById('kpiTrafico').textContent = "0";
+            document.getElementById('kpiCaptura').textContent = "0%";
+            document.getElementById('kpiLider').textContent = "-";
+            document.getElementById('tablaRegistros').innerHTML = `<tr><td colspan="4" class="has-text-centered has-text-danger">Rango de fechas inválido.</td></tr>`;
+            if (graficoTraficoInstancia) graficoTraficoInstancia.destroy();
+            return;
+        }
 
         // 1. FILTRAR REGISTROS
         let registrosFiltrados = datosDashboard.registros || [];
@@ -316,7 +322,7 @@
         const tablaCuerpo = document.getElementById('tablaRegistros');
         tablaCuerpo.innerHTML = '';
         if (registrosFiltrados.length === 0) {
-            tablaCuerpo.innerHTML = `<tr><td colspan="4" class="has-text-centered">Ningún registro en este rango de fechas.</td></tr>`;
+            tablaCuerpo.innerHTML = `<tr><td colspan="4" class="has-text-centered">Ningún registro comercial capturado en esta fecha.</td></tr>`;
         } else {
             registrosFiltrados.slice(-15).reverse().forEach(reg => {
                 const fila = document.createElement('tr');
@@ -325,7 +331,7 @@
             });
         }
 
-        // 6. RENDERIZACIÓN DE GRÁFICAS
+        // 6. RENDERIZACIÓN DE GRÁFICAS (Auto-contraíbles e inteligentes)
         if (sucursalFiltro === "Todas") {
             document.getElementById('tituloGrafica').textContent = "Comparativa entre Sucursales: Tráfico de Clientes vs Respuestas";
             const labelsTiendas = sucursalesMaestras.map(s => s.label);
@@ -342,13 +348,12 @@
             });
             renderizarGraficoBarras(labelsTiendas, datosTraficoTiendas, datosRespuestasTiendas);
         } else {
-            document.getElementById('tituloGrafica').textContent = `Tendencia Diaria - ${sucursalFiltro}`;
+            document.getElementById('tituloGrafica').textContent = `Tendencia Diaria Comercial - ${sucursalFiltro}`;
             const setFechas = new Set();
             traficoFiltrado.forEach(t => setFechas.add(extraerFechaLimpia(t.FECHA)));
             registrosFiltrados.forEach(reg => setFechas.add(reg["Fecha 2"] || extraerFechaLimpia(reg.Fecha)));
             
-            const labelsGrafico = Array.from(setFechas).sort().slice(-14);
-            const config = sucursalesMaestras.find(s => s.id === sucursalFiltro);
+            const labelsGrafico = Array.from(setFechas).sort(); // Muestra el set completo contraído de forma fluida
 
             const datosTraficoLinea = labelsGrafico.map(f => {
                 const dia = traficoFiltrado.find(t => extraerFechaLimpia(t.FECHA) === f);
@@ -380,7 +385,7 @@
             },
             options: { 
                 responsive: true, 
-                maintainAspectRatio: false,
+                maintainAspectRatio: false, // Permite que se contraiga en el espacio definido
                 plugins: { legend: { display: true, position: 'top', labels: { boxWidth: 20, font: { weight: 'bold' } } } }
             }
         });
@@ -400,7 +405,7 @@
             },
             options: { 
                 responsive: true, 
-                maintainAspectRatio: false,
+                maintainAspectRatio: false, // Totalmente responsivo sin importar cuántos días sean
                 plugins: { legend: { display: true, position: 'top', labels: { boxWidth: 20, font: { weight: 'bold' } } } }
             }
         });
