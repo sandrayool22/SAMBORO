@@ -8,79 +8,34 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@1.0.2/css/bulma.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
     <style>
-        body {
-            background: #F4EFE7;
-            font-family: 'Roboto', sans-serif;
-        }
-        .hero-samboro {
-            color: #b51d2a;
-            font-size: 45px;
-            font-weight: bold;
-        }
-        .subtitulo {
-            font-size: 18px;
-            color: #555;
-        }
-        .card-dashboard {
-            border-radius: 18px;
-        }
-        .kpi {
-            text-align: center;
-        }
-        .kpi h2 {
-            color: #b51d2a;
-            font-size: 40px;
-            font-weight: bold;
-        }
-        .panel {
-            border-radius: 18px;
-            min-height: 380px;
-        }
-        .input[type="date"] {
-            cursor: pointer;
-        }
-        .btn-calendario {
-            background-color: #fff;
-            border-color: #dbdbdb;
-            color: #b51d2a;
-            cursor: pointer;
-        }
-        .btn-calendario:hover {
-            background-color: #f5f5f5;
-        }
+        body { background: #F4EFE7; font-family: 'Roboto', sans-serif; }
+        .hero-samboro { color: #b51d2a; font-size: 45px; font-weight: bold; }
+        .subtitulo { font-size: 18px; color: #555; }
+        .card-dashboard { border-radius: 18px; }
+        .kpi { text-align: center; }
+        .kpi h2 { color: #b51d2a; font-size: 36px; font-weight: bold; }
+        .panel { border-radius: 18px; min-height: 380px; }
+        .input[type="date"] { cursor: pointer; }
+        .btn-calendario { background-color: #fff; border-color: #dbdbdb; color: #b51d2a; cursor: pointer; }
+        .btn-calendario:hover { background-color: #f5f5f5; }
         #loadingOverlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(244, 239, 231, 0.9);
-            z-index: 9999;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(244, 239, 231, 0.95); z-index: 9999;
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
         }
         .spinner {
-            border: 6px solid #f3f3f3;
-            border-top: 6px solid #b51d2a;
-            border-radius: 50%;
-            width: 50px;
-            height: 50px;
-            animation: spin 1s linear infinite;
-            margin-bottom: 15px;
+            border: 6px solid #f3f3f3; border-top: 6px solid #b51d2a;
+            border-radius: 50%; width: 50px; height: 50px;
+            animation: spin 1s linear infinite; margin-bottom: 15px;
         }
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
     </style>
 </head>
 <body>
 
 <div id="loadingOverlay">
     <div class="spinner"></div>
-    <h2 class="title is-4 has-text-centered" style="color: #b51d2a;">Por favor espera, cargando la data de Google Sheets...</h2>
+    <h2 class="title is-4" style="color: #b51d2a;">Cargando nueva estructura de Google Sheets...</h2>
 </div>
 
 <section class="section">
@@ -91,32 +46,21 @@
             <p class="subtitulo">Análisis de tráfico y necesidades comerciales</p>
         </div>
 
+        <!-- Filtros -->
         <div class="box card-dashboard">
             <div class="columns">
                 <div class="column">
                     <label class="label">Fecha Inicio</label>
                     <div class="field has-addons">
-                        <div class="control is-expanded">
-                            <input class="input" type="date" id="filtroFechaInicio">
-                        </div>
-                        <div class="control">
-                            <button class="button btn-calendario" onclick="abrirCalendario('filtroFechaInicio')" title="Seleccionar fecha">
-                                <span>▼</span>
-                            </button>
-                        </div>
+                        <div class="control is-expanded"><input class="input" type="date" id="filtroFechaInicio"></div>
+                        <div class="control"><button class="button btn-calendario" onclick="abrirCalendario('filtroFechaInicio')">▼</button></div>
                     </div>
                 </div>
                 <div class="column">
                     <label class="label">Fecha Fin</label>
                     <div class="field has-addons">
-                        <div class="control is-expanded">
-                            <input class="input" type="date" id="filtroFechaFin">
-                        </div>
-                        <div class="control">
-                            <button class="button btn-calendario" onclick="abrirCalendario('filtroFechaFin')" title="Seleccionar fecha">
-                                <span>▼</span>
-                            </button>
-                        </div>
+                        <div class="control is-expanded"><input class="input" type="date" id="filtroFechaFin"></div>
+                        <div class="control"><button class="button btn-calendario" onclick="abrirCalendario('filtroFechaFin')">▼</button></div>
                     </div>
                 </div>
                 <div class="column">
@@ -137,69 +81,41 @@
                 </div>
                 <div class="column is-narrow">
                     <label class="label">&nbsp;</label>
-                    <button class="button is-danger is-fullwidth" id="btnActualizar">
-                        Actualizar
-                    </button>
+                    <button class="button is-danger is-fullwidth" id="btnActualizar">Actualizar</button>
                 </div>
             </div>
         </div>
 
+        <!-- KPIs -->
         <div class="columns">
-            <div class="column">
-                <div class="box card-dashboard kpi">
-                    <p>Respuestas Obtenidas</p>
-                    <h2 id="kpiClientes">0</h2>
-                </div>
-            </div>
-            <div class="column">
-                <div class="box card-dashboard kpi">
-                    <p>Tráfico Total</p>
-                    <h2 id="kpiTrafico">0</h2>
-                </div>
-            </div>
-            <div class="column">
-                <div class="box card-dashboard kpi">
-                    <p>Captura %</p>
-                    <h2 id="kpiCaptura">0%</h2>
-                </div>
-            </div>
-            <div class="column">
-                <div class="box card-dashboard kpi">
-                    <p>Sucursal Líder</p>
-                    <h2 id="kpiLider">-</h2>
-                </div>
-            </div>
+            <div class="column"><div class="box card-dashboard kpi"><p>Respuestas Obtenidas</p><h2 id="kpiClientes">0</h2></div></div>
+            <div class="column"><div class="box card-dashboard kpi"><p>Tráfico Total</p><h2 id="kpiTrafico">0</h2></div></div>
+            <div class="column"><div class="box card-dashboard kpi"><p>Captura %</p><h2 id="kpiCaptura">0%</h2></div></div>
+            <div class="column"><div class="box card-dashboard kpi"><p>Sucursal Líder</p><h2 id="kpiLider">-</h2></div></div>
         </div>
 
+        <!-- Gráfica -->
         <div class="columns">
             <div class="column">
                 <div class="box panel">
                     <h3 class="title is-5" id="tituloGrafica">Comparativa de Tiendas</h3>
-                    <div style="height: 380px; position: relative;">
-                        <canvas id="graficaTrafico"></canvas>
-                    </div>
+                    <div style="height: 380px; position: relative;"><canvas id="graficaTrafico"></canvas></div>
                 </div>
             </div>
         </div>
 
+        <!-- Tabla -->
         <div class="columns">
             <div class="column">
                 <div class="box panel">
-                    <h3 class="title is-5">Últimas Interacciones</h3>
+                    <h3 class="title is-5">Últimas Interacciones (No Compra)</h3>
                     <div style="max-height: 280px; overflow-y: auto;">
                         <table class="table is-striped is-fullwidth">
                             <thead>
-                                <tr>
-                                    <th>Fecha</th>
-                                    <th>Sucursal</th>
-                                    <th>Vendedor</th>
-                                    <th>Respuesta / Comentario</th>
-                                </tr>
+                                <tr><th>Fecha</th><th>Sucursal</th><th>Vendedor</th><th>Respuesta / Comentario</th></tr>
                             </thead>
                             <tbody id="tablaRegistros">
-                                <tr>
-                                    <td colspan="4" class="has-text-centered">Cargando análisis desde Google Sheets...</td>
-                                </tr>
+                                <tr><td colspan="4" class="has-text-centered">Cargando...</td></tr>
                             </tbody>
                         </table>
                     </div>
@@ -212,81 +128,50 @@
 
 <script>
     const URL_WEB_APP = 'https://script.google.com/macros/s/AKfycbwY-YaV4rhag-AGVyeOR9lEULPS4RNvZsgr1I68JwHw-MeQEfwrhgluU8VLarEqBJ_fLQ/exec'; 
-
     let datosDashboard = null;
     let graficoTraficoInstancia = null;
 
-    // SISTEMA INTELIGENTE DE SINÓNIMOS A PRUEBA DE ERRORES:
-    // No importa si la columna dice "ZONA 7" o "Z7 TRAFICO", el código probará ambas hasta encontrar la data.
-    const aliasesTrafico = {
-        "ZONA 7": ["ZONA 7", "Z7 TRAFICO"],
-        "ZONA 11": ["ZONA 11", "Z11 TRAFICO"],
-        "ZONA 9": ["ZONA 9", "Z9 TRAFICO"],
-        "ZONA 17": ["ZONA 17", "Z17 TRAFICO"],
-        "ZONA 7 OUTLET": ["ZONA 7 OUTLET", "Z7O TRAFICO", "Z7O"],
-        "SAN CRISTOBAL": ["SAN CRISTOBAL", "SCB TRAFICO", "SAN CRIS", "SCB"],
-        "SAN CRIS": ["SAN CRISTOBAL", "SCB TRAFICO", "SAN CRIS", "SCB"],
-        "VILLA NUEVA": ["VILLA NUEVA", "CL TRAFICO", "CENTRO LOGISTICO", "CL"],
-        "CENTRO LOGISTICO": ["VILLA NUEVA", "CL TRAFICO", "CENTRO LOGISTICO", "CL"],
-        "DECOCITY": ["DECOCITY", "DECOCITY TRAFICO"],
-        "VITERRA": ["VITERRA", "VITERRA TRAFICO"]
-    };
-
-    // Estructura maestra de las tiendas operativas para los selectores y gráficas
-    const sucursalesOperativas = [
-        { id: "ZONA 7", label: "Zona 7", matchReg: ["ZONA 7"] },
-        { id: "ZONA 11", label: "Zona 11", matchReg: ["ZONA 11"] },
-        { id: "ZONA 9", label: "Zona 9", matchReg: ["ZONA 9"] },
-        { id: "ZONA 17", label: "Zona 17", matchReg: ["ZONA 17"] },
-        { id: "ZONA 7 OUTLET", label: "Zona 7 Outlet", matchReg: ["ZONA 7 OUTLET"] },
-        { id: "SAN CRISTOBAL", label: "San Cristóbal", matchReg: ["SAN CRISTOBAL", "SAN CRIS"] },
-        { id: "VILLA NUEVA", label: "Villa Nueva", matchReg: ["VILLA NUEVA", "CENTRO LOGISTICO"] },
-        { id: "DECOCITY", label: "Decocity", matchReg: ["DECOCITY"] },
-        { id: "VITERRA", label: "Viterra", matchReg: ["VITERRA"] }
+    // Listado maestro unificado para cruzar las hojas 'RESPUESTAS POR TIENDA' y 'TRAFICO DE CLIENTES POR TIENDA'
+    const sucursalesMaestras = [
+        { id: "ZONA 7", colTrafico: "ZONA 7", aliasesReg: ["ZONA 7", "ZONA7"], label: "Zona 7" },
+        { id: "ZONA 11", colTrafico: "ZONA 11", aliasesReg: ["ZONA 11", "ZONA11"], label: "Zona 11" },
+        { id: "ZONA 9", colTrafico: "ZONA 9", aliasesReg: ["ZONA 9", "ZONA9"], label: "Zona 9" },
+        { id: "ZONA 17", colTrafico: "ZONA 17", aliasesReg: ["ZONA 17", "ZONA17"], label: "Zona 17" },
+        { id: "ZONA 7 OUTLET", colTrafico: "ZONA 7 OUTLET", aliasesReg: ["ZONA 7 OUTLET", "Z7O"], label: "Zona 7 Outlet" },
+        { id: "SAN CRISTOBAL", colTrafico: "SAN CRISTOBAL", aliasesReg: ["SAN CRISTOBAL", "SAN CRIS"], label: "San Cristóbal" },
+        { id: "PLANTA VILLA NUEVA", colTrafico: "PLANTA VILLA NUEVA", aliasesReg: ["PLANTA VILLA NUEVA", "VILLA NUEVA", "CENTRO LOGISTICO", "CL"], label: "Villa Nueva / Planta" },
+        { id: "DECOCITY", colTrafico: "DECOCITY", aliasesReg: ["DECOCITY"], label: "Decocity" },
+        { id: "VITERRA", colTrafico: "VITERRA", aliasesReg: ["VITERRA"], label: "Viterra" }
     ];
-
-    // Función buscadora que rastrea cualquier alias en las columnas
-    function obtenerTraficoDia(dia, sucursal) {
-        const nombresPosibles = aliasesTrafico[sucursal.toUpperCase()] || [sucursal.toUpperCase()];
-        for (let nombre of nombresPosibles) {
-            if (dia[nombre] !== undefined && dia[nombre] !== "") {
-                return parseInt(dia[nombre]) || 0;
-            }
-        }
-        return 0; // Retorna 0 solo si de verdad la columna no existe o está vacía
-    }
 
     function abrirCalendario(inputId) {
         const input = document.getElementById(inputId);
-        if (input) {
-            if (typeof input.showPicker === 'function') {
-                input.showPicker();
-            } else {
-                input.click();
-            }
-        }
+        if (input && typeof input.showPicker === 'function') input.showPicker();
     }
 
-    function extraerFechaLimpia(campoFecha) {
-        if (!campoFecha) return '';
-        const texto = campoFecha.toString().trim();
-        if (texto.includes('T')) return texto.split('T')[0];
-        if (texto.includes(' ')) return texto.split(' ')[0];
-        return texto;
+    function extraerFechaLimpia(campo) {
+        if (!campo) return '';
+        return campo.toString().trim().split(' ')[0].split('T')[0];
+    }
+
+    // Valida si una sucursal de los logs pertenece al grupo unificado de la tienda maestra
+    function perteneceASucursal(nombreHoja, sucursalMaestraId) {
+        if (!nombreHoja) return false;
+        const nombreLimpio = nombreHoja.trim().toUpperCase();
+        const config = sucursalesMaestras.find(s => s.id === sucursalMaestraId);
+        return config ? config.aliasesReg.includes(nombreLimpio) : false;
     }
 
     async function cargarDatos() {
         try {
             const respuesta = await fetch(URL_WEB_APP);
             datosDashboard = await respuesta.json();
-            
             poblarFiltros();
             inicializarDashboard();
-            
             document.getElementById('loadingOverlay').style.display = 'none';
         } catch (error) {
-            console.error("Error cargando base de datos:", error);
-            document.getElementById('loadingOverlay').innerHTML = `<h2 class="title is-4 has-text-danger">Error de conexión. Verifica la implementación de tu Apps Script.</h2>`;
+            console.error(error);
+            document.getElementById('loadingOverlay').innerHTML = `<h2 class="title is-4 has-text-danger">Error al conectar con la base de datos.</h2>`;
         }
     }
 
@@ -294,26 +179,29 @@
         const sucursales = new Set();
         const vendedores = new Set();
 
-        datosDashboard.registros.forEach(reg => {
-            if (reg.Sucursal) sucursales.add(reg.Sucursal.trim());
-            if (reg.Vendedor) vendedores.add(reg.Vendedor.trim());
+        // Poblamos desde la bitácora real de respuestas
+        datosDashboard.respuestasGenerales.forEach(r => {
+            if (r["Columna 1"]) {
+                let nombre = r["Columna 1"].trim();
+                if(nombre.toUpperCase() === "SAN CRIS") nombre = "SAN CRISTOBAL";
+                if(nombre.toUpperCase() === "CENTRO LOGISTICO" || nombre.toUpperCase() === "VILLA NUEVA") nombre = "PLANTA VILLA NUEVA";
+                sucursales.add(nombre.toUpperCase());
+            }
+            if (r["USUARIO DE VENDEDOR"]) vendedores.add(r["USUARIO DE VENDEDOR"].trim());
         });
 
         const selectSucursal = document.getElementById('filtroSucursal');
-        Array.from(sucursales).sort().forEach(suc => {
-            if(suc.toUpperCase() !== "SAN CRIS" && suc.toUpperCase() !== "VILLA NUEVA") {
-                const opt = document.createElement('option');
-                opt.value = suc;
-                opt.textContent = suc;
-                selectSucursal.appendChild(opt);
-            }
+        sucursalesMaestras.forEach(s => {
+            const opt = document.createElement('option');
+            opt.value = s.id;
+            opt.textContent = s.label;
+            selectSucursal.appendChild(opt);
         });
 
         const selectVendedor = document.getElementById('filtroVendedor');
-        Array.from(vendedores).sort().forEach(vend => {
+        Array.from(vendedores).sort().forEach(v => {
             const opt = document.createElement('option');
-            opt.value = vend;
-            opt.textContent = vend;
+            opt.value = v; opt.textContent = v;
             selectVendedor.appendChild(opt);
         });
 
@@ -333,107 +221,74 @@
         const sucursalFiltro = document.getElementById('filtroSucursal').value;
         const vendedorFiltro = document.getElementById('filtroVendedor').value;
 
-        // 1. FILTRAR RESPUESTAS
-        let registrosFiltrados = datosDashboard.registros;
+        // 1. FILTRAR RESPUESTAS OBTENIDAS (Hoja: RESPUESTAS POR TIENDA)
+        let resFiltradas = datosDashboard.respuestasGenerales || [];
+        if (fInicio) resFiltradas = resFiltradas.filter(r => extraerFechaLimpia(r["Marca temporal"] || r["Columna 2"]) >= fInicio);
+        if (fFin) resFiltradas = resFiltradas.filter(r => extraerFechaLimpia(r["Marca temporal"] || r["Columna 2"]) <= fFin);
+        if (sucursalFiltro !== 'Todas') resFiltradas = resFiltradas.filter(r => perteneceASucursal(r["Columna 1"], sucursalFiltro));
+        if (vendedorFiltro !== 'Todos') resFiltradas = resFiltradas.filter(r => r["USUARIO DE VENDEDOR"] && r["USUARIO DE VENDEDOR"].trim() === vendedorFiltro);
 
-        if (fInicio) {
-            registrosFiltrados = registrosFiltrados.filter(reg => (reg["Fecha 2"] || extraerFechaLimpia(reg.Fecha)) >= fInicio);
-        }
-        if (fFin) {
-            registrosFiltrados = registrosFiltrados.filter(reg => (reg["Fecha 2"] || extraerFechaLimpia(reg.Fecha)) <= fFin);
-        }
-        if (sucursalFiltro !== 'Todas') {
-            registrosFiltrados = registrosFiltrados.filter(reg => {
-                if(!reg.Sucursal) return false;
-                const sReg = reg.Sucursal.trim().toUpperCase();
-                const sFil = sucursalFiltro.toUpperCase();
-                // Busca en las operativas para incluir equivalencias
-                const sucM = sucursalesOperativas.find(s => s.matchReg.includes(sFil));
-                return sucM ? sucM.matchReg.includes(sReg) : (sReg === sFil);
-            });
-        }
-        if (vendedorFiltro !== 'Todos') {
-            registrosFiltrados = registrosFiltrados.filter(reg => reg.Vendedor && reg.Vendedor.trim() === vendedorFiltro);
-        }
-
-        const totalRespuestas = registrosFiltrados.length;
+        const totalRespuestas = resFiltradas.length;
         document.getElementById('kpiClientes').textContent = totalRespuestas;
 
-        // 2. FILTRAR TRÁFICO TOTAL USANDO LA FUNCIÓN BUSCADORA
-        let traficoFiltrado = datosDashboard.trafico;
-        if (fInicio) {
-            traficoFiltrado = traficoFiltrado.filter(t => extraerFechaLimpia(t.FECHA) >= fInicio);
-        }
-        if (fFin) {
-            traficoFiltrado = traficoFiltrado.filter(t => extraerFechaLimpia(t.FECHA) <= fFin);
-        }
+        // 2. FILTRAR TRÁFICO TOTAL (Hoja: TRAFICO DE CLIENTES POR TIENDA)
+        let traficoFiltrado = datosDashboard.trafico || [];
+        if (fInicio) traficoFiltrado = traficoFiltrado.filter(t => extraerFechaLimpia(t.FECHA) >= fInicio);
+        if (fFin) traficoFiltrado = traficoFiltrado.filter(t => extraerFechaLimpia(t.FECHA) <= fFin);
 
         let sumatoriaTrafico = 0;
         traficoFiltrado.forEach(dia => {
             if (sucursalFiltro !== 'Todas') {
-                sumatoriaTrafico += obtenerTraficoDia(dia, sucursalFiltro);
+                const config = sucursalesMaestras.find(s => s.id === sucursalFiltro);
+                if (config && dia[config.colTrafico]) sumatoriaTrafico += parseInt(dia[config.colTrafico]) || 0;
             } else {
-                sucursalesOperativas.forEach(suc => {
-                    sumatoriaTrafico += obtenerTraficoDia(dia, suc.id);
+                sucursalesMaestras.forEach(s => {
+                    if (dia[s.colTrafico]) sumatoriaTrafico += parseInt(dia[s.colTrafico]) || 0;
                 });
             }
         });
-
         document.getElementById('kpiTrafico').textContent = sumatoriaTrafico;
 
-        // 3. KPI CAPTURA %
-        let tasaCaptura = 0;
-        if (sumatoriaTrafico > 0) {
-            tasaCaptura = Math.round((totalRespuestas / sumatoriaTrafico) * 100);
-        }
+        // 3. CAPTURA %
+        let tasaCaptura = sumatoriaTrafico > 0 ? Math.round((totalRespuestas / sumatoriaTrafico) * 100) : 0;
         document.getElementById('kpiCaptura').textContent = tasaCaptura + "%";
 
-        // 4. KPI SUCURSAL LÍDER POR % DE CAPTURA
+        // 4. KPI SUCURSAL LÍDER POR EFICIENCIA
         if (sucursalFiltro === "Todas") {
-            let mejorTienda = "-";
-            let mejorPorcentaje = -1;
-
-            sucursalesOperativas.forEach(suc => {
-                let traficoTienda = 0;
-                traficoFiltrado.forEach(dia => {
-                    traficoTienda += obtenerTraficoDia(dia, suc.id);
-                });
-
-                let respuestasTienda = datosDashboard.registros.filter(reg => {
-                    const fReg = reg["Fecha 2"] || extraerFechaLimpia(reg.Fecha);
-                    const matchFecha = (!fInicio || fReg >= fInicio) && (!fFin || fReg <= fFin);
-                    if (!reg.Sucursal) return false;
-                    return matchFecha && suc.matchReg.includes(reg.Sucursal.trim().toUpperCase());
+            let mejorTienda = "-"; let mejorPct = -1;
+            sucursalesMaestras.forEach(s => {
+                let tTienda = 0;
+                traficoFiltrado.forEach(dia => { tTienda += parseInt(dia[s.colTrafico]) || 0; });
+                let rTienda = (datosDashboard.respuestasGenerales || []).filter(r => {
+                    const fReg = extraerFechaLimpia(r["Marca temporal"] || r["Columna 2"]);
+                    return (!fInicio || fReg >= fInicio) && (!fFin || fReg <= fFin) && perteneceASucursal(r["Columna 1"], s.id);
                 }).length;
 
-                if (traficoTienda > 0) {
-                    let pct = (respuestasTienda / traficoTienda) * 100;
-                    if (pct > mejorPorcentaje) {
-                        mejorPorcentaje = pct;
-                        mejorTienda = `${suc.label} (${Math.round(pct)}%)`;
-                    }
+                if (tTienda > 0) {
+                    let pct = (rTienda / tTienda) * 100;
+                    if (pct > mejorPct) { mejorPct = pct; mejorTienda = `${s.label} (${Math.round(pct)}%)`; }
                 }
             });
             document.getElementById('kpiLider').textContent = mejorTienda;
         } else {
-            document.getElementById('kpiLider').textContent = sucursalFiltro;
+            const config = sucursalesMaestras.find(s => s.id === sucursalFiltro);
+            document.getElementById('kpiLider').textContent = config ? config.label : sucursalFiltro;
         }
 
-        // 5. POBLAR TABLA INFORMATIVA
+        // 5. BITÁCORA DE TEXTOS (Hoja: Registro_No_Compra)
+        let registrosComentarios = datosDashboard.registros || [];
+        if (fInicio) registrosComentarios = registrosComentarios.filter(reg => (reg["Fecha 2"] || extraerFechaLimpia(reg.Fecha)) >= fInicio);
+        if (fFin) registrosComentarios = registrosComentarios.filter(reg => (reg["Fecha 2"] || extraerFechaLimpia(reg.Fecha)) <= fFin);
+        if (sucursalFiltro !== 'Todas') registrosComentarios = registrosComentarios.filter(reg => perteneceASucursal(reg.Sucursal, sucursalFiltro));
+
         const tablaCuerpo = document.getElementById('tablaRegistros');
         tablaCuerpo.innerHTML = '';
-
-        if (registrosFiltrados.length === 0) {
-            tablaCuerpo.innerHTML = `<tr><td colspan="4" class="has-text-centered">No se encontraron interacciones para los filtros seleccionados.</td></tr>`;
+        if (registrosComentarios.length === 0) {
+            tablaCuerpo.innerHTML = `<tr><td colspan="4" class="has-text-centered">Sin interacciones de texto en este rango.</td></tr>`;
         } else {
-            registrosFiltrados.slice(-15).reverse().forEach(reg => {
+            registrosComentarios.slice(-15).reverse().forEach(reg => {
                 const fila = document.createElement('tr');
-                fila.innerHTML = `
-                    <td>${reg["Fecha 2"] || extraerFechaLimpia(reg.Fecha)}</td>
-                    <td>${reg.Sucursal || ''}</td>
-                    <td>${reg.Vendedor || ''}</td>
-                    <td>${reg["Respuesta cliente"] || ''}</td>
-                `;
+                fila.innerHTML = `<td>${reg["Fecha 2"] || extraerFechaLimpia(reg.Fecha)}</td><td>${reg.Sucursal || ''}</td><td>${reg.Vendedor || ''}</td><td>${reg["Respuesta cliente"] || ''}</td>`;
                 tablaCuerpo.appendChild(fila);
             });
         }
@@ -441,166 +296,73 @@
         // 6. RENDERIZACIÓN DE GRÁFICAS
         if (sucursalFiltro === "Todas") {
             document.getElementById('tituloGrafica').textContent = "Comparativa entre Sucursales: Tráfico de Clientes vs Respuestas";
-            
-            const labelsTiendas = sucursalesOperativas.map(s => s.label);
-            
-            const datosTraficoTiendas = sucursalesOperativas.map(suc => {
-                let totalSuc = 0;
-                traficoFiltrado.forEach(dia => {
-                    totalSuc += obtenerTraficoDia(dia, suc.id);
-                });
-                return totalSuc;
+            const labelsTiendas = sucursalesMaestras.map(s => s.label);
+            const datosTraficoTiendas = sucursalesMaestras.map(s => {
+                let tot = 0; traficoFiltrado.forEach(dia => tot += parseInt(dia[s.colTrafico]) || 0); return tot;
             });
-
-            const datosRespuestasTiendas = sucursalesOperativas.map(suc => {
-                return datosDashboard.registros.filter(reg => {
-                    const fReg = reg["Fecha 2"] || extraerFechaLimpia(reg.Fecha);
-                    const matchFecha = (!fInicio || fReg >= fInicio) && (!fFin || fReg <= fFin);
-                    if (!reg.Sucursal) return false;
-                    const matchSuc = suc.matchReg.includes(reg.Sucursal.trim().toUpperCase());
-                    const matchVend = (vendedorFiltro === 'Todos' || (reg.Vendedor && reg.Vendedor.trim() === vendedorFiltro));
-                    return matchFecha && matchSuc && matchVend;
+            const datosRespuestasTiendas = sucursalesMaestras.map(s => {
+                return (datosDashboard.respuestasGenerales || []).filter(r => {
+                    const fReg = extraerFechaLimpia(r["Marca temporal"] || r["Columna 2"]);
+                    const matchF = (!fInicio || fReg >= fInicio) && (!fFin || fReg <= fFin);
+                    const matchV = (vendedorFiltro === 'Todos' || (r["USUARIO DE VENDEDOR"] && r["USUARIO DE VENDEDOR"].trim() === vendedorFiltro));
+                    return matchF && matchV && perteneceASucursal(r["Columna 1"], s.id);
                 }).length;
             });
-
             renderizarGraficoBarras(labelsTiendas, datosTraficoTiendas, datosRespuestasTiendas);
-
         } else {
-            document.getElementById('tituloGrafica').textContent = `Tendencia Diaria de Clientes e Interacciones - ${sucursalFiltro}`;
+            document.getElementById('tituloGrafica').textContent = `Tendencia Diaria - ${sucursalFiltro}`;
+            const setFechas = new Set();
+            traficoFiltrado.forEach(t => setFechas.add(extraerFechaLimpia(t.FECHA)));
+            resFiltradas.forEach(r => setFechas.add(extraerFechaLimpia(r["Marca temporal"] || r["Columna 2"])));
             
-            const setFechasUnicas = new Set();
-            traficoFiltrado.forEach(t => {
-                const f = extraerFechaLimpia(t.FECHA);
-                if (f) setFechasUnicas.add(f);
-            });
-            registrosFiltrados.forEach(reg => {
-                const f = reg["Fecha 2"] || extraerFechaLimpia(reg.Fecha);
-                if (f) setFechasUnicas.add(f);
+            const labelsGrafico = Array.from(setFechas).sort().slice(-14);
+            const config = sucursalesMaestras.find(s => s.id === sucursalFiltro);
+
+            const datosTraficoLinea = labelsGrafico.map(f => {
+                const dia = traficoFiltrado.find(t => extraerFechaLimpia(t.FECHA) === f);
+                return dia && config ? (parseInt(dia[config.colTrafico]) || 0) : 0;
             });
 
-            const labelsGrafico = Array.from(setFechasUnicas).sort().slice(-14);
-
-            const datosTraficoLinea = labelsGrafico.map(fechaDia => {
-                const diaTrafico = datosDashboard.trafico.find(t => extraerFechaLimpia(t.FECHA) === fechaDia);
-                if (!diaTrafico) return 0;
-                return obtenerTraficoDia(diaTrafico, sucursalFiltro);
-            });
-
-            const datosRespuestasLinea = labelsGrafico.map(fechaDia => {
-                return datosDashboard.registros.filter(reg => {
-                    const fReg = reg["Fecha 2"] || extraerFechaLimpia(reg.Fecha);
-                    const matchFecha = (fReg === fechaDia);
-                    if (!reg.Sucursal) return false;
-                    
-                    const sReg = reg.Sucursal.trim().toUpperCase();
-                    const sFil = sucursalFiltro.toUpperCase();
-                    const sucM = sucursalesOperativas.find(s => s.matchReg.includes(sFil));
-                    const matchSuc = sucM ? sucM.matchReg.includes(sReg) : (sReg === sFil);
-
-                    const matchVend = (vendedorFiltro === 'Todos' || (reg.Vendedor && reg.Vendedor.trim() === vendedorFiltro));
-                    return matchFecha && matchSuc && matchVend;
+            const datosRespuestasLinea = labelsGrafico.map(f => {
+                return (datosDashboard.respuestasGenerales || []).filter(r => {
+                    const fReg = extraerFechaLimpia(r["Marca temporal"] || r["Columna 2"]);
+                    const matchV = (vendedorFiltro === 'Todos' || (r["USUARIO DE VENDEDOR"] && r["USUARIO DE VENDEDOR"].trim() === vendedorFiltro));
+                    return fReg === f && matchV && perteneceASucursal(r["Columna 1"], sucursalFiltro);
                 }).length;
             });
-
             renderizarGraficoLineas(labelsGrafico, datosTraficoLinea, datosRespuestasLinea, sucursalFiltro);
         }
     }
 
-    function renderizarGraficoBarras(labels, datosTrafico, datosRespuestas) {
+    function renderizarGraficoBarras(labels, dTrafico, dRespuestas) {
         const ctx = document.getElementById('graficaTrafico').getContext('2d');
-        if (graficoTraficoInstancia) {
-            graficoTraficoInstancia.destroy();
-        }
-
+        if (graficoTraficoInstancia) graficoTraficoInstancia.destroy();
         graficoTraficoInstancia = new Chart(ctx, {
             type: 'bar',
             data: {
                 labels: labels,
                 datasets: [
-                    {
-                        label: 'Tráfico Total',
-                        data: datosTrafico,
-                        backgroundColor: '#b51d2a',
-                        borderColor: '#90121d',
-                        borderWidth: 1,
-                        borderRadius: 5
-                    },
-                    {
-                        label: 'Respuestas de No Compra',
-                        data: datosRespuestas,
-                        backgroundColor: '#23d1b6',
-                        borderColor: '#19a18b',
-                        borderWidth: 1,
-                        borderRadius: 5
-                    }
+                    { label: 'Tráfico Total', data: dTrafico, backgroundColor: '#b51d2a', borderRadius: 5 },
+                    { label: 'Respuestas Recolectadas', data: dRespuestas, backgroundColor: '#23d1b6', borderRadius: 5 }
                 ]
             },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: { display: true, position: 'top' }
-                },
-                scales: {
-                    y: { 
-                        beginAtZero: true,
-                        grid: { color: 'rgba(0,0,0,0.05)' },
-                        title: { display: true, text: 'Cantidad' }
-                    },
-                    x: { grid: { display: false } }
-                }
-            }
+            options: { responsive: true, maintainAspectRatio: false }
         });
     }
 
-    function renderizarGraficoLineas(labels, datosTrafico, datosRespuestas, sucursal) {
+    function renderizarGraficoLineas(labels, dTrafico, dRespuestas, suc) {
         const ctx = document.getElementById('graficaTrafico').getContext('2d');
-        if (graficoTraficoInstancia) {
-            graficoTraficoInstancia.destroy();
-        }
-
+        if (graficoTraficoInstancia) graficoTraficoInstancia.destroy();
         graficoTraficoInstancia = new Chart(ctx, {
             type: 'line',
             data: {
                 labels: labels,
                 datasets: [
-                    {
-                        label: `Tráfico Total (${sucursal})`,
-                        data: datosTrafico,
-                        borderColor: '#b51d2a',
-                        backgroundColor: 'rgba(181, 29, 42, 0.04)',
-                        borderWidth: 3,
-                        tension: 0.25,
-                        fill: true,
-                        pointBackgroundColor: '#b51d2a'
-                    },
-                    {
-                        label: `Respuestas Guardadas`,
-                        data: datosRespuestas,
-                        borderColor: '#23d1b6', 
-                        backgroundColor: 'rgba(35, 209, 182, 0.04)',
-                        borderWidth: 3,
-                        tension: 0.25,
-                        fill: false,
-                        pointBackgroundColor: '#23d1b6'
-                    }
+                    { label: 'Tráfico', data: dTrafico, borderColor: '#b51d2a', backgroundColor: 'rgba(181,29,42,0.04)', fill: true, tension: 0.2 },
+                    { label: 'Respuestas', data: dRespuestas, borderColor: '#23d1b6', fill: false, tension: 0.2 }
                 ]
             },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: { display: true, position: 'top' }
-                },
-                scales: {
-                    y: { 
-                        beginAtZero: true, 
-                        grid: { color: 'rgba(0,0,0,0.05)' },
-                        title: { display: true, text: 'Conteo' }
-                    },
-                    x: { grid: { display: false } }
-                }
-            }
+            options: { responsive: true, maintainAspectRatio: false }
         });
     }
 
