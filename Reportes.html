@@ -151,10 +151,26 @@
         if (input && typeof input.showPicker === 'function') input.showPicker();
     }
 
-    function extraerFechaLimpia(campo) {
-        if (!campo) return '';
-        return campo.toString().trim().split(' ')[0].split('T')[0];
+ function extraerFechaLimpia(campo) {
+    if (!campo) return '';
+    
+    // Convertir a texto y limpiar espacios
+    let texto = campo.toString().trim().split(' ')[0].split('T')[0];
+    
+    // Si la fecha viene en formato DD/MM/AAAA (ej: 17/07/2026)
+    if (texto.includes('/')) {
+        let partes = texto.split('/');
+        if (partes[0].length <= 2 && partes[2].length === 4) {
+            let dia = partes[0].padStart(2, '0');
+            let mes = partes[1].padStart(2, '0');
+            let anio = partes[2];
+            return `${anio}-${mes}-${dia}`; // La convierte a 2026-07-17
+        }
     }
+    
+    // Si ya viene en formato AAAA-MM-DD
+    return texto;
+}
 
     function perteneceASucursal(nombreHoja, sucursalMaestraId) {
         if (!nombreHoja) return false;
